@@ -45,8 +45,6 @@ import vazkii.arl.util.ItemNBTHelper;
 import vazkii.quark.base.util.EntityOpacityHandler;
 import vazkii.quark.oddities.feature.TinyPotato;
 import vazkii.quark.tweaks.ai.EntityAIWantLove;
-import vazkii.quark.world.entity.ai.EntityAIFoxhoundSleep;
-import vazkii.quark.world.entity.ai.EntityAISleep;
 import vazkii.quark.world.feature.Foxhounds;
 
 import javax.annotation.Nonnull;
@@ -124,7 +122,7 @@ public class EntityFoxhound extends EntityWolf implements IMob {
 		}
 
 		if (this.world.isRemote)
-			this.world.spawnParticle(isSleeping() ? EnumParticleTypes.SMOKE_NORMAL : EnumParticleTypes.FLAME, this.posX + (this.rand.nextDouble() - 0.5D) * this.width, this.posY + (this.rand.nextDouble() - 0.5D) * this.height, this.posZ + (this.rand.nextDouble() - 0.5D) * this.width, 0.0D, 0.0D, 0.0D);
+			this.world.spawnParticle(EnumParticleTypes.FLAME, this.posX + (this.rand.nextDouble() - 0.5D) * this.width, this.posY + (this.rand.nextDouble() - 0.5D) * this.height, this.posZ + (this.rand.nextDouble() - 0.5D) * this.width, 0.0D, 0.0D, 0.0D);
 
 		if (isTamed()) {
 			BlockPos below = getPosition().down();
@@ -147,19 +145,13 @@ public class EntityFoxhound extends EntityWolf implements IMob {
 		return FOXHOUND_LOOT_TABLE;
 	}
 
-	protected EntityAISleep aiSleep;
-
 	@Override
 	protected void initEntityAI() {
 		this.aiSit = new EntityAISit(this);
-		this.aiSleep = new EntityAISleep(this);
 		this.tasks.addTask(1, new EntityAISwimming(this));
-		this.tasks.addTask(2, this.aiSleep);
 		this.tasks.addTask(3, this.aiSit);
 		this.tasks.addTask(4, new EntityAILeapAtTarget(this, 0.4F));
 		this.tasks.addTask(5, new EntityAIAttackMelee(this, 1.0D, true));
-		this.tasks.addTask(6, new EntityAIFoxhoundSleep(this, 0.8D, true));
-		this.tasks.addTask(7, new EntityAIFoxhoundSleep(this, 0.8D, false));
 		this.tasks.addTask(8, new EntityAIFollowOwner(this, 1.0D, 10.0F, 2.0F));
 		this.tasks.addTask(9, new EntityAIMate(this, 1.0D));
 		this.tasks.addTask(10, new EntityAIWanderAvoidWater(this, 1.0D));
@@ -202,7 +194,6 @@ public class EntityFoxhound extends EntityWolf implements IMob {
 
 	@Override
 	public boolean attackEntityFrom(@Nonnull DamageSource source, float amount) {
-		setWoke();
 		return super.attackEntityFrom(source, amount);
 	}
 
@@ -252,10 +243,6 @@ public class EntityFoxhound extends EntityWolf implements IMob {
 			return true;
 		}
 
-		if (!world.isRemote) {
-			setWoke();
-		}
-
 		return super.processInteract(player, hand);
 	}
 
@@ -301,15 +288,7 @@ public class EntityFoxhound extends EntityWolf implements IMob {
 
 	@Override
 	protected SoundEvent getAmbientSound() {
-		return isSleeping() ? null : super.getAmbientSound();
-	}
-
-	public boolean isSleeping() {
-		return dataManager.get(SLEEPING);
-	}
-
-	public void setSleeping(boolean sleeping) {
-		dataManager.set(SLEEPING, sleeping);
+		return super.getAmbientSound();
 	}
 
 	@Override
@@ -320,18 +299,6 @@ public class EntityFoxhound extends EntityWolf implements IMob {
 				&& isValidLightLevel()
 				&& getBlockPathWeight(new BlockPos(posX, getEntityBoundingBox().minY, posZ)) >= 0F
 				&& iblockstate.canEntitySpawn(this);
-	}
-
-	public EntityAISleep getAISleep() {
-		return aiSleep;
-	}
-
-	private void setWoke() {
-		EntityAISleep sleep = getAISleep();
-		if (sleep != null) {
-			setSleeping(false);
-			sleep.setSleeping(false);
-		}
 	}
 
 	@Override
