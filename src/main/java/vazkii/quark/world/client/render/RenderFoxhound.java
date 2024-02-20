@@ -26,8 +26,6 @@ public class RenderFoxhound extends RenderLiving<EntityFoxhound> {
 			"textures/entity/foxhound_idle.png");
 	private static final ResourceLocation FOXHOUND_ANGRY = new ResourceLocation(LibMisc.MOD_ID,
 			"textures/entity/foxhound_angry.png");
-	private static final ResourceLocation FOXHOUND_SLEEPING = new ResourceLocation(LibMisc.MOD_ID,
-			"textures/entity/foxhound_sleeping.png");
 
 	public RenderFoxhound(RenderManager render) {
 		super(render, new ModelFoxhound(), 0.5F);
@@ -37,6 +35,6 @@ public class RenderFoxhound extends RenderLiving<EntityFoxhound> {
 	@Nullable
 	@Override
 	protected ResourceLocation getEntityTexture(@Nonnull EntityFoxhound entity) {
-		return entity.isSleeping() ? FOXHOUND_SLEEPING : (entity.isAngry() ? FOXHOUND_ANGRY : FOXHOUND_IDLE);
+		return (entity.isAngry() ? FOXHOUND_ANGRY : FOXHOUND_IDLE);
 	}
 }

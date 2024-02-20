@@ -83,25 +83,7 @@ public class ModelFoxhound extends ModelBase {
         this.head.rotateAngleX = 0;
         this.body.rotateAngleY = hound.getShakeAngle(partialTickTime, -0.16F);
         this.tail.rotateAngleY = hound.getShakeAngle(partialTickTime, -0.2F);
-
-        if (hound.isSleeping()) {
-            this.head.setRotationPoint(1.0F, 20.5F, 0.0F);
-            this.setRotateAngle(head, 0.0F, 0.7853981633974483F, -0.04363323129985824F);
-
-            this.body.setRotationPoint(0.0F, 20.0F, 12.0F);
-            this.setRotateAngle(body, 1.5707963267948966F, 0.0F, 1.5707963267948966F);
-            this.tail.setRotationPoint(0.0F, -1.0F, 1.0F);
-            this.setRotateAngle(tail, 2.5497515042385164F, -0.22759093446006054F, 0.0F);
-            this.rightFrontLeg.setRotationPoint(0.0F, 18.0F, 2.0F);
-            this.leftFrontLeg.setRotationPoint(2.0F, 21.0F, 1.0F);
-            this.rightBackLeg.setRotationPoint(0.0F, 22.0F, 11.0F);
-            this.leftBackLeg.setRotationPoint(3.0F, 20.0F, 10.0F);
-
-            this.setRotateAngle(rightFrontLeg, 0.2181661564992912F, 0.4363323129985824F, 1.3089969389957472F);
-            this.setRotateAngle(leftFrontLeg, 0.0F, 0.0F, 1.3962634015954636F);
-            this.setRotateAngle(rightBackLeg, -1.0471975511965976F, -0.08726646259971647F, 1.48352986419518F);
-            this.setRotateAngle(leftBackLeg, -0.7853981633974483F, 0.0F, 1.2217304763960306F);
-        } else if (hound.isSitting()) {
+        if (hound.isSitting()) {
             this.head.setRotationPoint(0.0F, 12.0F, 2.0F);
             this.body.setRotationPoint(0.0F, 23.0F, 7.0F);
             this.setRotateAngle(body, 0.7853981633974483F, this.body.rotateAngleY, 0F);
@@ -135,11 +117,8 @@ public class ModelFoxhound extends ModelBase {
     @Override
     public void setRotationAngles(float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scaleFactor, Entity entityIn) {
         super.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scaleFactor, entityIn);
-        if (!((EntityFoxhound) entityIn).isSleeping()) {
-            head.rotateAngleY += netHeadYaw * 0.017453292F;
-            head.rotateAngleX += headPitch * 0.017453292F;
-        } else
-            head.rotateAngleY += MathHelper.cos(ageInTicks / 30) / 20;
+        head.rotateAngleY += netHeadYaw * 0.017453292F;
+        head.rotateAngleX += headPitch * 0.017453292F;
     }
 
     @Override
