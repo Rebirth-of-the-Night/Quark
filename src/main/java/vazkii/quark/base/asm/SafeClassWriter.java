@@ -69,9 +69,6 @@ public class SafeClassWriter extends ClassWriter {
             if (classResource == null) {
                 throw new ClassNotFoundException("Could not find class binary: " + className + " (" + altName + ")");
             }
-            System.out.println("[qasmd] found class " + className + " at alt name " + altName);
-        } else {
-            System.out.println("[qasmd] found class " + className);
         }
 
         ClassTreeNodeFactory factory = new ClassTreeNodeFactory(className, loader);
