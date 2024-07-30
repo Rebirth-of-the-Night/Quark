@@ -1062,7 +1062,7 @@ public class ClassTransformer implements IClassTransformer, Opcodes {
 			didAnything |= pair.test(node);
 
 		if (didAnything) {
-			ClassWriter writer = new SafeClassWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
+			ClassWriter writer = new SafeClassWriter(reader, ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES, Launch.classLoader);
 			if (debugLog)
 				log(getNodeString(node));
 			debugLog = false;
@@ -1199,44 +1199,6 @@ public class ClassTransformer implements IClassTransformer, Opcodes {
 
 		public boolean matches(MethodInsnNode method) {
 			return matches(method.name, method.desc);
-		}
-	}
-	/**
-	 * Safe class writer.
-	 * The way COMPUTE_FRAMES works may require loading additional classes. This can cause ClassCircularityErrors.
-	 * The override for getCommonSuperClass will ensure that COMPUTE_FRAMES works properly by using the right ClassLoader.
-	 * <p>
-	 * Code from: https://github.com/JamiesWhiteShirt/clothesline/blob/master/src/core/java/com/jamieswhiteshirt/clothesline/core/SafeClassWriter.java
-	 */
-	public static class SafeClassWriter extends ClassWriter {
-		public SafeClassWriter(int flags) {
-			super(flags);
-		}
-
-		@Override
-		protected String getCommonSuperClass(String type1, String type2) {
-			Class<?> c, d;
-			ClassLoader classLoader = Launch.classLoader;
-			try {
-				c = Class.forName(type1.replace('/', '.'), false, classLoader);
-				d = Class.forName(type2.replace('/', '.'), false, classLoader);
-			} catch (Exception e) {
-				throw new RuntimeException(e.toString());
-			}
-			if (c.isAssignableFrom(d)) {
-				return type1;
-			}
-			if (d.isAssignableFrom(c)) {
-				return type2;
-			}
-			if (c.isInterface() || d.isInterface()) {
-				return "java/lang/Object";
-			} else {
-				do {
-					c = c.getSuperclass();
-				} while (!c.isAssignableFrom(d));
-				return c.getName().replace('.', '/');
-			}
 		}
 	}
 
