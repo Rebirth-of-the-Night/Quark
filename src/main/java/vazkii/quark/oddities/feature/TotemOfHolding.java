@@ -58,6 +58,7 @@ public class TotemOfHolding extends Feature {
 	public static boolean darkSoulsMode, enableOnPK, destroyItems, anyoneCollect, enableSoulCompass, shouldBlacklistBeWhitelist, enableTotemItem;
 	public static float entityScale;
 	public static double glowRange;
+	public static int deathTime, baseDropAmount, randomBonusDrops;
 
 	private static String[] tempBlacklist;
 	public static Set<Pair<Item, Integer>> holdingBlacklist;
@@ -80,7 +81,10 @@ public class TotemOfHolding extends Feature {
 		tempSavingItem = loadPropString("Saving Item", "An item that must be in the player inventory for the totem to work. Set to 'none' to disable", "quark:totem_of_holding");
 		enableTotemItem = loadPropBool("Enable Totem of Holding Item", "", true);
 		entityScale = (float) loadPropDouble("Totem of Holding Entity Scale", "Displayed scale of the totem of holding entity", 1.0D);
+		deathTime = loadPropInt("Totem of Holding Vanish Time", "How long it takes for the totem to vanish once depleted, in ticks", 40);
 		glowRange = loadPropDouble("Totem Glow Range", "Maximum range at which totems visibly glow. Default is 32; set to 0 to disable", 32);
+		baseDropAmount = loadPropInt("Totem Drop Amount Base", "The minimum number of items the totem always drops per hit", 3);
+		randomBonusDrops = loadPropInt("Totem Drop Amount Bonus", "The extra random drops per hit. Ranges from 0 to this number", 4);
 	}
 	
 	@Override

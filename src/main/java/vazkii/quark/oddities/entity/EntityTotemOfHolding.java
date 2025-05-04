@@ -35,8 +35,8 @@ public class EntityTotemOfHolding extends Entity {
 	private static final String TAG_OWNER = "owner";
 	
 	private static final DataParameter<Boolean> DYING = EntityDataManager.createKey(EntityTotemOfHolding.class, DataSerializers.BOOLEAN);
-	
-	public static final int DEATH_TIME = 40;
+
+	public static final int DEATH_TIME = TotemOfHolding.deathTime;
 
 	private int deathTicks = 0;
 	private String owner;
@@ -81,8 +81,8 @@ public class EntityTotemOfHolding extends Entity {
 				if (e != owner)
 					return false;
 			}
-			
-			int drops = Math.min(storedItems.size(), 3 + world.rand.nextInt(4));
+
+			int drops = Math.min(storedItems.size(), TotemOfHolding.baseDropAmount + world.rand.nextInt(TotemOfHolding.randomBonusDrops));
 			
 			for (int counter = 0; counter < drops; counter++) {
 				ItemStack stack = storedItems.remove(0);
