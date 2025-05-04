@@ -14,6 +14,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.entity.monster.EntitySkeleton;
 import net.minecraft.entity.monster.EntityZombie;
+import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biome.SpawnListEntry;
@@ -26,8 +27,11 @@ import vazkii.quark.base.lib.LibEntityIDs;
 import vazkii.quark.base.module.Feature;
 import vazkii.quark.world.client.render.RenderAshen;
 import vazkii.quark.world.client.render.RenderDweller;
+import vazkii.quark.world.client.render.RenderForgotten;
 import vazkii.quark.world.entity.EntityAshen;
 import vazkii.quark.world.entity.EntityDweller;
+import vazkii.quark.world.entity.EntityForgotten;
+import vazkii.quark.world.item.ItemForgottenHat;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,21 +39,27 @@ import java.util.List;
 public class DepthMobs extends Feature {
 
 	public static int upperBound;
-	public static boolean enableAshen, enableDweller;
-	public static int ashenWeight, dwellerWeight;
-	public static int ashenMaxPack, dwellerMaxPack, ashenMinPack, dwellerMinPack;
+	public static boolean enableAshen, enableDweller, enableForgotten;
+	public static int ashenWeight, dwellerWeight, forgottenWeight;
+	public static int ashenMaxPack, dwellerMaxPack, forgottenMaxPack, ashenMinPack, dwellerMinPack, forgottenMinPack;
+
+	public static Item forgotten_hat;
 
 	@Override
 	public void setupConfig() {
 		upperBound = loadPropInt("Highest Y level for spawns", "", 20);
 		enableAshen = loadPropBool("Enable Ashen", "", true);
 		enableDweller = loadPropBool("Enable Dweller", "", true);
+		enableForgotten = loadPropBool("Enable Forgotten", "", true);
 		ashenWeight = loadPropInt("Ashen Spawn Weight", "(Skeleton is 100. The higher, the more will spawn)", 30);
 		dwellerWeight = loadPropInt("Dweller Spawn Weight", "(Zombie is 100. The higher, the more will spawn)", 30);
+		forgottenWeight = loadPropInt("Forgotten Spawn Weight", "(Skeleton is 100. The higher, the more will spawn)", 30);
 		ashenMaxPack = loadPropInt("Largest Ashen spawn group", "", 2);
 		dwellerMaxPack = loadPropInt("Largest Dweller spawn group", "", 2);
+		forgottenMaxPack = loadPropInt("Largest Forgotten spawn group", "", 2);
 		ashenMinPack = loadPropInt("Smallest Ashen spawn group", "", 1);
 		dwellerMinPack = loadPropInt("Smallest Dweller spawn group", "", 1);
+		forgottenMinPack = loadPropInt("Smallest Forgotten spawn group", "", 1);
 	}
 
 	@Override
@@ -65,6 +75,14 @@ public class DepthMobs extends Feature {
 			EntityRegistry.registerModEntity(new ResourceLocation(ashenName), EntityAshen.class, ashenName, LibEntityIDs.ASHEN, Quark.instance, 80, 3, true, 0x838376, 0x533d3c);
 			EntityRegistry.addSpawn(EntityAshen.class, ashenWeight, ashenMinPack, ashenMaxPack, EnumCreatureType.MONSTER, getBiomesWithMob(EntitySkeleton.class));
 		}
+
+		if (enableForgotten) {
+			String forgottenName = "quark:forgotten";
+			EntityRegistry.registerModEntity(new ResourceLocation(forgottenName), EntityForgotten.class, forgottenName, LibEntityIDs.FORGOTTEN, Quark.instance, 80, 3, true, 0x5C5C53, 0x3A2B2A);
+			EntityRegistry.addSpawn(EntityForgotten.class, forgottenWeight, forgottenMinPack, forgottenMaxPack, EnumCreatureType.MONSTER, getBiomesWithMob(EntitySkeleton.class));
+
+			forgotten_hat = new ItemForgottenHat();
+		}
 	}
 
 	@Override
@@ -73,6 +91,8 @@ public class DepthMobs extends Feature {
 			RenderingRegistry.registerEntityRenderingHandler(EntityDweller.class, RenderDweller.FACTORY);
 		if (enableAshen)
 			RenderingRegistry.registerEntityRenderingHandler(EntityAshen.class, RenderAshen.FACTORY);
+		if (enableForgotten)
+			RenderingRegistry.registerEntityRenderingHandler(EntityForgotten.class, RenderForgotten.FACTORY);
 	}
 	
 	@Override

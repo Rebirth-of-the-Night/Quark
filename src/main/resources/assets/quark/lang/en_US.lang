@@ -784,6 +784,7 @@ item.quark:dye_blue.name=Blue Dye
 item.quark:dye_black.name=Black Dye
 item.quark:dye_white.name=White Dye
 item.quark:archaeologist_hat.name=Archaeologist Hat
+item.quark:forgotten_hat.name=Forgotten Hat
 item.quark:diamond_heart.name=Heart of Diamond
 item.quark:pickarang.name=Pickarang
 item.quark:frog_leg.name=Frog Leg
@@ -795,6 +796,7 @@ item.quark:crab_leg.name=Crab Leg
 item.quark:cooked_crab_leg.name=Cooked Crab Leg
 item.quark:crab_shell.name=Crab Shell Fragment
 item.quark:chain.name=Iron Chain
+item.quark:holding_totem.name=Totem of Holding
 
 # ENTITY NAMES
 entity.quark:colored_item_frame.name=Colored Item Frame
@@ -802,6 +804,7 @@ entity.quark:glass_item_frame.name=Glass Item Frame
 entity.quark:flat_item_frame.name=Flat Item Frame
 entity.quark:dweller.name=Dweller
 entity.quark:ashen.name=Ashen
+entity.quark:forgotten.name=Forgotten
 entity.quark:pirate.name=Pirate
 entity.quark:wraith.name=Wraith
 entity.quark:chest_passenger.name=Boat Chest
