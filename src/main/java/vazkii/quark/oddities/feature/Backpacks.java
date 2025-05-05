@@ -5,6 +5,7 @@ import java.util.*;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import baubles.api.BaubleType;
 import baubles.api.BaublesApi;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
@@ -207,7 +208,7 @@ public class Backpacks extends Feature {
 		if (Loader.isModLoaded("baubles")) {
 			if (e instanceof EntityPlayer) {
 				EntityPlayer player = (EntityPlayer) e;
-				return BaublesApi.isBaubleEquipped(player, backpack) == 5;
+				return BaublesApi.isBaubleEquipped(player, backpack) != -1;
 			}
 		} else {
 			if (e instanceof EntityLivingBase) {
@@ -224,7 +225,7 @@ public class Backpacks extends Feature {
 		if (Loader.isModLoaded("baubles")) {
 			if (e instanceof EntityPlayer) {
 				EntityPlayer player = (EntityPlayer) e;
-				return BaublesApi.isBaubleEquipped(player, stack.getItem()) == 5;
+				return BaublesApi.isBaubleEquipped(player, stack.getItem()) != -1;
 			}
 		} else {
 			if (e instanceof EntityLivingBase) {
@@ -242,7 +243,7 @@ public class Backpacks extends Feature {
 		ItemStack stack = null;
 		if (Loader.isModLoaded("baubles")) {
 			if (e instanceof EntityPlayer)
-				stack = BaublesApi.getBaublesHandler((EntityPlayer) e).getStackInSlot(5);
+				stack = BaublesApi.getBaublesHandler((EntityPlayer) e).getStackInSlot(BaublesApi.isBaubleEquipped((EntityPlayer) e, backpack));
 		} else {
 			if (e instanceof EntityLivingBase)
 				stack = ((EntityLivingBase) e).getItemStackFromSlot(EntityEquipmentSlot.CHEST);
