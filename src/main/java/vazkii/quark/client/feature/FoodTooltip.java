@@ -101,7 +101,7 @@ public class FoodTooltip extends Feature {
 
 	@Override
 	public String[] getIncompatibleMods() {
-		return new String[] { "appleskin" };
+		return new String[] { "appleskin", "lemonskin" };
 	}
 
 	@Override
