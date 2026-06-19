@@ -21,7 +21,7 @@ public class ModelBackpack extends ModelModArmor {
 
 		straps = new ModelRenderer(this, 24, 0);
 		straps.setRotationPoint(0.0F, 0.0F, 0.0F);
-		straps.addBox(-4.0F, 0.05F, -3.0F, 8, 8, 5, 0.0F);
+		straps.addBox(-4.0F, 0.05F, -3.01F, 8, 8, 5, 0.0F);
 		fitting = new ModelRenderer(this, 50, 0);
 		fitting.setRotationPoint(0.0F, 0.0F, 0.0F);
 		fitting.addBox(-1.0F, 3.0F, 6.0F, 2, 3, 1, 0.0F);

@@ -79,7 +79,7 @@ public class TotemOfHolding extends Feature {
 				"Format is modid:item[:meta]", 
 				new String[0]);
 		tempSavingItem = loadPropString("Saving Item", "An item that must be in the player inventory for the totem to work. Set to 'none' to disable", "quark:totem_of_holding");
-		enableTotemItem = loadPropBool("Enable Totem of Holding Item", "", true);
+		enableTotemItem = loadPropBool("Enable Totem of Holding Item", "", false);
 		entityScale = (float) loadPropDouble("Totem of Holding Entity Scale", "Displayed scale of the totem of holding entity", 1.0D);
 		deathTime = loadPropInt("Totem of Holding Vanish Time", "How long it takes for the totem to vanish once depleted, in ticks", 40);
 		glowRange = loadPropDouble("Totem Glow Range", "Maximum range at which totems visibly glow. Default is 32; set to 0 to disable", 32);
@@ -122,6 +122,7 @@ public class TotemOfHolding extends Feature {
 				.collect(Collectors.toSet());
 		
 		ItemStack item = (tempSavingItem.equals("none") ? ItemStack.EMPTY : new ArrayList<>(ItemMetaHelper.getFromString("totem holding saving item", tempSavingItem, false)).get(0));
+		if (tempSavingItem.equals("quark:totem_of_holding") && !enableTotemItem) item = ItemStack.EMPTY;
 		savingItem = !item.isEmpty() ? Pair.of(item.getItem(), item.getMetadata()) : Pair.of(Items.AIR, 0);
 	}
 	
