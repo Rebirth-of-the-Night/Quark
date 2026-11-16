@@ -15,6 +15,11 @@ public class QuarkOddities extends Module {
 		registerFeature(new MatrixEnchanting());
 		registerFeature(new TinyPotato());
 	}
+
+	@Override
+	public boolean isEnabledByDefault() {
+		return false;
+	}
 	
 	@Override
 	public ItemStack getIconStack() {
