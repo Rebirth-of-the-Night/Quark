@@ -78,9 +78,7 @@ public final class ModuleLoader {
 		registerModule(QuarkManagement.class);
 		registerModule(QuarkClient.class);
 		registerModule(QuarkMisc.class);
-
-		if (Loader.isModLoaded("quarkoddities"))
-			registerModule(QuarkOddities.class);
+		registerModule(QuarkOddities.class);
 		
 		registerModule(QuarkExperimental.class);
 	}
