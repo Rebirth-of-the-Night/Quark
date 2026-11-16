@@ -36,6 +36,10 @@ public class MessageRequestEmote extends NetworkMessage<MessageRequestEmote> {
 	@Override
 	public IMessage handleMessage(MessageContext context) {
 		EntityPlayerMP player = context.getServerHandler().player;
+
+	    if (emoteName == null || emoteName.contains("/") || emoteName.contains("\\") || emoteName.contains(".."))
+			return null;
+
 		MinecraftServer server = player.getServer();
 		if (server != null) server.addScheduledTask(() -> {
 			NetworkHandler.INSTANCE.sendToAll(new MessageDoEmote(emoteName, player.getName(), ContributorRewardHandler.getTier(player)));
