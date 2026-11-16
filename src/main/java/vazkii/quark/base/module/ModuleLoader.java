@@ -45,6 +45,7 @@ import java.io.File;
 import java.lang.management.ManagementFactory;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -55,7 +56,7 @@ public final class ModuleLoader {
 	public static final boolean DEBUG_MODE = ManagementFactory.getRuntimeMXBean().getInputArguments().toString().contains("-agentlib:jdwp"); 
 
 	private static List<Class<? extends Module>> moduleClasses;
-	public static final Map<Class<? extends Module>, Module> moduleInstances = new HashMap<>();
+	public static final Map<Class<? extends Module>, Module> moduleInstances = new LinkedHashMap<>();
 	public static final Map<Class<? extends Feature>, Feature> featureInstances = new HashMap<>();
 	public static final Map<String, Feature> featureClassnames = new HashMap<>();
 

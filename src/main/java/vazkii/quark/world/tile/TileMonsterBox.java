@@ -17,7 +17,6 @@ import vazkii.quark.base.sounds.QuarkSounds;
 import vazkii.quark.world.feature.MonsterBoxes;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class TileMonsterBox extends TileMod implements ITickable {
@@ -45,10 +44,8 @@ public class TileMonsterBox extends TileMod implements ITickable {
 		}
 
 		boolean doBreak = breakProgress > 0;
-		if (!doBreak) {
-			List<EntityPlayer> players = world.getEntitiesWithinAABB(EntityPlayer.class, new AxisAlignedBB(pos).grow(MonsterBoxes.activationRadius));
-			doBreak = players.size() > 0;
-		}
+		if (!doBreak)
+			doBreak = isPlayerInRange(pos);
 
 		if (doBreak) {
 			if (breakProgress == 0)
@@ -61,6 +58,14 @@ public class TileMonsterBox extends TileMod implements ITickable {
 				spawnMobs();
 			}
 		}
+	}
+
+	private boolean isPlayerInRange(BlockPos pos) {
+		AxisAlignedBB area = new AxisAlignedBB(pos).grow(MonsterBoxes.activationRadius);
+		for (EntityPlayer player : world.playerEntities)
+			if (!player.isSpectator() && !player.isCreative() && player.getEntityBoundingBox().intersects(area))
+				return true;
+		return false;
 	}
 
 	private void spawnMobs() {
