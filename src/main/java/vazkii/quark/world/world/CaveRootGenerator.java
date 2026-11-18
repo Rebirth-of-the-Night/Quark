@@ -20,6 +20,11 @@ public class CaveRootGenerator implements IWorldGenerator {
 		if (!CaveRoots.dimensions.canSpawnHere(world) || chunkGenerator instanceof ChunkGeneratorFlat)
 			return;
 		
+		for(int x = -16; x <= 16; x += 16)
+			for(int z = -16; z <= 16; z += 16)
+				if(!world.isBlockLoaded(new BlockPos((chunkX << 4) + x, 64, (chunkZ << 4) + z)))
+					return;
+		
 		for (int i = 0; i < CaveRoots.chunkAttempts; i++) {
 			int x = chunkX * 16 + random.nextInt(12) + 2;
 			int z = chunkZ * 16 + random.nextInt(12) + 2;
