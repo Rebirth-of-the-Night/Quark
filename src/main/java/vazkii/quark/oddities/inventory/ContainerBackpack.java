@@ -3,8 +3,12 @@ package vazkii.quark.oddities.inventory;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.*;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandlerModifiable;
+import vazkii.aurelienribon.tweenengine.equations.Back;
+import vazkii.quark.base.module.ConfigHelper;
+import vazkii.quark.oddities.QuarkOddities;
 import vazkii.quark.oddities.feature.Backpacks;
 
 import javax.annotation.Nonnull;
@@ -161,6 +165,11 @@ public class ContainerBackpack extends ContainerPlayer {
 	@Nonnull
 	@Override
 	public ItemStack slotClick(int slotId, int dragType, ClickType clickTypeIn, EntityPlayer player) {
+		if (Backpacks.ignoreShiftClick && clickTypeIn == ClickType.QUICK_MOVE && slotId < 36)
+		{
+			return player.inventoryContainer.slotClick(slotId, dragType, clickTypeIn, player);
+		}
+
 		SlotCachingItemHandler.cache(this);
 		ItemStack stack = super.slotClick(slotId, dragType, clickTypeIn, player);
 		SlotCachingItemHandler.applyCache(this);
