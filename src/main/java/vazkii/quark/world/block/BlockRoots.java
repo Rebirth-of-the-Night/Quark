@@ -133,7 +133,7 @@ public class BlockRoots extends BlockMod implements IQuarkBlock, IShearable, IGr
 
 	@Override
 	public void grow(@Nonnull World worldIn, @Nonnull Random rand, @Nonnull BlockPos pos, @Nonnull IBlockState state) {
-		growAndReturnLastPos(worldIn, pos, state, false);
+		growAndReturnLastPos(worldIn, pos, state, true);
 	}
 	
 	private static IBlockState nextState(Random rand) {
