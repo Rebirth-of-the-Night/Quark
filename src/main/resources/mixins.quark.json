@@ -27,6 +27,7 @@
   ],
   "client": [
     "betterfireeffect.RenderMixin",
+    "betternausea.EntityRendererMixin",
     "boatsails.RenderBoatMixin",
     "chainlinkage.RenderManagerMixin",
     "coloredlights.BlockModelRendererMixin",

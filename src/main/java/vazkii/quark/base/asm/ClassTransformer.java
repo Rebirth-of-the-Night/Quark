@@ -103,7 +103,7 @@ public class ClassTransformer implements IClassTransformer, Opcodes {
 		registerLegacy("net.minecraft.client.gui.inventory.GuiBeacon$PowerButton", ClassTransformer::transformBeaconButton);
 
 		// For Better Nausea
-		register("net.minecraft.client.renderer.EntityRenderer", ClassTransformer::transformEntityRenderer);
+		registerLegacy("net.minecraft.client.renderer.EntityRenderer", ClassTransformer::transformEntityRenderer);
 
 		// For Pickarangs
 		register("net.minecraft.enchantment.EnchantmentDamage", ClassTransformer::transformSharpness);
@@ -906,7 +906,9 @@ public class ClassTransformer implements IClassTransformer, Opcodes {
 				}));
 	}
 
+	@Deprecated
 	private static byte[] transformEntityRenderer(byte[] basicClass) {
+		//Insert ASMHooks.renderNausea(this, partialTicks) after every setupCameraTransform call in renderWorldPass
 		MethodSignature sig = new MethodSignature("renderWorldPass", "func_175068_a", "(IFJ)V");
 		MethodSignature target = new MethodSignature("setupCameraTransform", "func_78479_a", "(FI)V");
 
