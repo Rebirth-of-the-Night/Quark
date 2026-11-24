@@ -45,8 +45,8 @@ public class ClassTransformer implements IClassTransformer, Opcodes {
 		registerLegacy("net.minecraft.client.model.ModelBiped", ClassTransformer::transformModelBiped);
 
 		// For Color Runes
-		register("net.minecraft.client.renderer.RenderItem", ClassTransformer::transformRenderItem);
-		register("net.minecraft.client.renderer.entity.layers.LayerArmorBase", ClassTransformer::transformLayerArmorBase);
+		registerLegacy("net.minecraft.client.renderer.RenderItem", ClassTransformer::transformRenderItem);
+		registerLegacy("net.minecraft.client.renderer.entity.layers.LayerArmorBase", ClassTransformer::transformLayerArmorBase);
 
 		// For Boat Sails and Chain Linkage
 		register("net.minecraft.client.renderer.entity.RenderBoat", ClassTransformer::transformRenderBoat);
@@ -162,8 +162,11 @@ public class ClassTransformer implements IClassTransformer, Opcodes {
 				})));
 	}
 
+	@Deprecated
 	private static byte[] transformRenderItem(byte[] basicClass) {
+		//Insert ASMHooks.setColorRuneTargetStack(stack) at the start of renderItem
 		MethodSignature sig1 = new MethodSignature("renderItem", "func_180454_a", "(Lnet/minecraft/item/ItemStack;Lnet/minecraft/client/renderer/block/model/IBakedModel;)V");
+		//Modify every instance of the purple glint color (-8372020 = #FF8040CC) in renderEffect with ASMHooks.getRuneColor
 		MethodSignature sig2 = new MethodSignature("renderEffect", "func_191966_a", "(Lnet/minecraft/client/renderer/block/model/IBakedModel;)V");
 
 		byte[] transClass = basicClass;
@@ -192,8 +195,11 @@ public class ClassTransformer implements IClassTransformer, Opcodes {
 		return transClass;
 	}
 
+	@Deprecated
 	private static byte[] transformLayerArmorBase(byte[] basicClass) {
+		//Insert ASMHooks.setColorRuneTargetStack(entity, slot) at the start of renderArmorLayer
 		MethodSignature sig1 = new MethodSignature("renderArmorLayer", "func_188361_a", "(Lnet/minecraft/entity/EntityLivingBase;FFFFFFFLnet/minecraft/inventory/EntityEquipmentSlot;)V");
+		//Without OptiFine: insert ASMHooks.applyRuneColor() after every GlStateManager.color call in renderEnchantedGlint
 		MethodSignature sig2 = new MethodSignature("renderEnchantedGlint", "func_188364_a", "(Lnet/minecraft/client/renderer/entity/RenderLivingBase;Lnet/minecraft/entity/EntityLivingBase;Lnet/minecraft/client/model/ModelBase;FFFFFFF)V");
 
 		MethodSignature target = new MethodSignature("color", "func_179131_c", "(FFFF)V");

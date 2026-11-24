@@ -11,6 +11,9 @@
   "mixins": [
   ],
   "client": [
+    "colorrunes.LayerArmorBaseGlintMixin",
+    "colorrunes.LayerArmorBaseMixin",
+    "colorrunes.RenderItemMixin",
     "emotes.ModelBipedMixin"
   ]
 }
