@@ -17,6 +17,7 @@
     "chainlinkage.EntityMinecartMixin",
     "chainlinkage.EntityMixin",
     "improvedsleeping.WorldServerMixin",
+    "morebannerlayers.RecipeAddPatternMixin",
     "pistonlogic.BlockPistonBaseMixin",
     "pistonsmovetes.BlockPistonBaseMixin",
     "pistonsmovetes.TileEntityPistonMixin",
@@ -30,6 +31,7 @@
     "colorrunes.LayerArmorBaseMixin",
     "colorrunes.RenderItemMixin",
     "emotes.ModelBipedMixin",
+    "morebannerlayers.ItemBannerMixin",
     "pistonsmovetes.TileEntityPistonRendererMixin"
   ]
 }

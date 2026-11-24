@@ -78,8 +78,8 @@ public class ClassTransformer implements IClassTransformer, Opcodes {
 		registerLegacy("net.minecraft.client.renderer.BlockModelRenderer", ClassTransformer::transformBlockModelRenderer);
 
 		// For More Banner Layers
-		register("net.minecraft.item.crafting.RecipesBanners$RecipeAddPattern", ClassTransformer::transformRecipeAddPattern);
-		register("net.minecraft.item.ItemBanner", ClassTransformer::transformItemBanner);
+		registerLegacy("net.minecraft.item.crafting.RecipesBanners$RecipeAddPattern", ClassTransformer::transformRecipeAddPattern);
+		registerLegacy("net.minecraft.item.ItemBanner", ClassTransformer::transformItemBanner);
 
 		// Better Fire Effect
 		register("net.minecraft.client.renderer.entity.Render", ClassTransformer::transformRender);
@@ -623,7 +623,9 @@ public class ClassTransformer implements IClassTransformer, Opcodes {
 				})));
 	}
 
+	@Deprecated
 	private static byte[] transformRecipeAddPattern(byte[] basicClass) {
+		//Modify the result of the first TileEntityBanner.getPatterns call in 'matches' with ASMHooks.shiftLayerCountDown
 		MethodSignature sig = new MethodSignature("matches", "func_77569_a", "(Lnet/minecraft/inventory/InventoryCrafting;Lnet/minecraft/world/World;)Z");
 
 		MethodSignature target = new MethodSignature("getPatterns", "func_175113_c", "(Lnet/minecraft/item/ItemStack;)I");
@@ -641,7 +643,9 @@ public class ClassTransformer implements IClassTransformer, Opcodes {
 				})));
 	}
 
+	@Deprecated
 	private static byte[] transformItemBanner(byte[] basicClass) {
+		//Modify the first int constant 6 (max layer count) in appendHoverTextFromTileEntityTag with ASMHooks.shiftLayerCountUp
 		MethodSignature sig = new MethodSignature("appendHoverTextFromTileEntityTag", "func_185054_a", "(Lnet/minecraft/item/ItemStack;Ljava/util/List;)V");
 		return transform(basicClass, forMethod(sig, combine((AbstractInsnNode node) -> { // Filter
 					return node.getOpcode() == BIPUSH && ((IntInsnNode) node).operand == 6;
