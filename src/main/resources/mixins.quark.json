@@ -9,6 +9,8 @@
     "defaultRequire": 1
   },
   "mixins": [
+    "bettercraftshifting.ContainerMerchantMixin",
+    "bettercraftshifting.ContainerWorkbenchMixin",
     "boatsails.EntityBoatMixin",
     "boatsails.EntityMixin",
     "chainlinkage.EntityBoatMixin",

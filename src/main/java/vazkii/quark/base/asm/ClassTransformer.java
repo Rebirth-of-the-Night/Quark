@@ -61,8 +61,8 @@ public class ClassTransformer implements IClassTransformer, Opcodes {
 		registerLegacy("net.minecraft.block.BlockPistonBase", ClassTransformer::transformBlockPistonBase);
 
 		// For Better Craft Shifting
-		register("net.minecraft.inventory.ContainerWorkbench", ClassTransformer::transformContainerWorkbench);
-		register("net.minecraft.inventory.ContainerMerchant", ClassTransformer::transformContainerMerchant);
+		registerLegacy("net.minecraft.inventory.ContainerWorkbench", ClassTransformer::transformContainerWorkbench);
+		registerLegacy("net.minecraft.inventory.ContainerMerchant", ClassTransformer::transformContainerMerchant);
 
 		// For Pistons Move TEs
 		registerLegacy("net.minecraft.tileentity.TileEntityPiston", ClassTransformer::transformTileEntityPiston);
@@ -430,15 +430,18 @@ public class ClassTransformer implements IClassTransformer, Opcodes {
 						})));
 	}
 
+	@Deprecated
 	private static byte[] transformContainerWorkbench(byte[] basicClass) {
 		return transformTransferStackInSlot(basicClass, "getMinInventoryBoundaryCrafting", "getMaxInventoryBoundaryCrafting");
 	}
 
+	@Deprecated
 	private static byte[] transformContainerMerchant(byte[] basicClass) {
 		return transformTransferStackInSlot(basicClass, "getMinInventoryBoundaryVillager", "getMaxInventoryBoundaryVillager");
 	}
 
 	private static byte[] transformTransferStackInSlot(byte[] basicClass, String firstHook, String secondHook) {
+		//Modify the start and end index of every mergeItemStack call in transferStackInSlot with ASMHooks.get[Min/Max]InventoryBoundary(start, end)
 		MethodSignature sig = new MethodSignature("transferStackInSlot", "func_82846_b", "(Lnet/minecraft/entity/player/EntityPlayer;I)Lnet/minecraft/item/ItemStack;");
 
 		MethodSignature target = new MethodSignature("mergeItemStack", "func_75135_a", "(Lnet/minecraft/item/ItemStack;IIZ)Z");
