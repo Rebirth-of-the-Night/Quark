@@ -123,7 +123,7 @@ public class ClassTransformer implements IClassTransformer, Opcodes {
 		registerLegacy("net.minecraft.enchantment.EnchantmentHelper", ClassTransformer::transformEnchantmentHelper);
 
 		// For Parrot Eggs
-		register("net.minecraft.client.renderer.entity.layers.LayerEntityOnShoulder", ClassTransformer::transformLayerEntityOnShoulder);
+		registerLegacy("net.minecraft.client.renderer.entity.layers.LayerEntityOnShoulder", ClassTransformer::transformLayerEntityOnShoulder);
 
 		// For Glowing Totems
 		register("net.minecraft.client.renderer.RenderGlobal", ClassTransformer::transformRenderGlobal);
@@ -1049,7 +1049,9 @@ public class ClassTransformer implements IClassTransformer, Opcodes {
 		)));
 	}
 
+	@Deprecated
 	private static byte[] transformLayerEntityOnShoulder(byte[] basicClass) {
+		//Modify the texture of every bindTexture call in renderEntityOnShoulder with ASMHooks.replaceParrotTexture(texture, nbt)
         MethodSignature sig = new MethodSignature("renderEntityOnShoulder", "func_192864_a", 
                 "(Lnet/minecraft/entity/player/EntityPlayer;Ljava/util/UUID;Lnet/minecraft/nbt/NBTTagCompound;Lnet/minecraft/client/renderer/entity/RenderLivingBase;Lnet/minecraft/client/model/ModelBase;Lnet/minecraft/util/ResourceLocation;Ljava/lang/Class;FFFFFFFZ)Lnet/minecraft/client/renderer/entity/layers/LayerEntityOnShoulder$DataHolder;");
 

@@ -43,6 +43,7 @@
     "emotes.ModelBipedMixin",
     "extrapotions.GuiBeaconButtonMixin",
     "morebannerlayers.ItemBannerMixin",
+    "parroteggs.LayerEntityOnShoulderMixin",
     "pistonsmovetes.TileEntityPistonRendererMixin",
     "renderitemsinchat.LightUtilMixin",
     "showinvalidslots.GuiContainerMixin"
