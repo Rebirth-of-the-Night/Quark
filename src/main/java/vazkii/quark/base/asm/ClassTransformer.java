@@ -82,7 +82,7 @@ public class ClassTransformer implements IClassTransformer, Opcodes {
 		registerLegacy("net.minecraft.item.ItemBanner", ClassTransformer::transformItemBanner);
 
 		// Better Fire Effect
-		register("net.minecraft.client.renderer.entity.Render", ClassTransformer::transformRender);
+		registerLegacy("net.minecraft.client.renderer.entity.Render", ClassTransformer::transformRender);
 
 		// For Witch Hats
 		register("net.minecraft.entity.ai.EntityAITarget", ClassTransformer::transformEntityAITarget);
@@ -659,7 +659,9 @@ public class ClassTransformer implements IClassTransformer, Opcodes {
 				})));
 	}
 
+	@Deprecated
 	private static byte[] transformRender(byte[] basicClass) {
+		//Return at the start of renderEntityOnFire if ASMHooks.renderFire(entity, x, y, z) returns true
 		MethodSignature sig = new MethodSignature("renderEntityOnFire", "func_76977_a", "(Lnet/minecraft/entity/Entity;DDDF)V");
 
 		return transform(basicClass, forMethod(sig, (MethodNode method) -> { // Action

@@ -24,6 +24,7 @@
     "pistonspushpullitems.TileEntityPistonMixin"
   ],
   "client": [
+    "betterfireeffect.RenderMixin",
     "boatsails.RenderBoatMixin",
     "chainlinkage.RenderManagerMixin",
     "coloredlights.BlockModelRendererMixin",
