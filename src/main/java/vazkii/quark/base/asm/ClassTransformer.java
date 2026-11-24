@@ -114,7 +114,7 @@ public class ClassTransformer implements IClassTransformer, Opcodes {
 		registerLegacy("net.minecraftforge.client.model.pipeline.LightUtil", ClassTransformer::transformLightUtil);
 
 		// For Hoe Sickles
-		register("net.minecraft.enchantment.Enchantment", ClassTransformer::transformEnchantment);
+		registerLegacy("net.minecraft.enchantment.Enchantment", ClassTransformer::transformEnchantment);
 
 		// For Iron Ladders
 		register("net.minecraft.block.BlockDynamicLiquid", ClassTransformer::transformDynamicLiquid);
@@ -948,7 +948,9 @@ public class ClassTransformer implements IClassTransformer, Opcodes {
 				}
 		)));
 	}
+	@Deprecated
 	private static byte[] transformEnchantment(byte[] basicClass) {
+		//OR every return value of Enchantment.canApply with ASMHooks.canFortuneApply(this, stack)
 		MethodSignature sig = new MethodSignature("canApply", "func_92089_a", "(Lnet/minecraft/item/ItemStack;)Z");
 
 		return transform(basicClass, forMethod(sig, combine(

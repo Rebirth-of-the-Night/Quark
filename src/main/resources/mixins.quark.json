@@ -16,6 +16,7 @@
     "chainlinkage.EntityBoatMixin",
     "chainlinkage.EntityMinecartMixin",
     "chainlinkage.EntityMixin",
+    "hoesickle.EnchantmentMixin",
     "improvedsleeping.WorldServerMixin",
     "morebannerlayers.RecipeAddPatternMixin",
     "pickarang.DamageSourceMixin",
