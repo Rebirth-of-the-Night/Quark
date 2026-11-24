@@ -88,7 +88,7 @@ public class ClassTransformer implements IClassTransformer, Opcodes {
 		registerLegacy("net.minecraft.entity.ai.EntityAITarget", ClassTransformer::transformEntityAITarget);
 
 		// For Show Invalid Slots
-		register("net.minecraft.client.gui.inventory.GuiContainer", ClassTransformer::transformGuiContainer);
+		registerLegacy("net.minecraft.client.gui.inventory.GuiContainer", ClassTransformer::transformGuiContainer);
 
 		// For Springy Slime
 		register("net.minecraft.entity.Entity", ClassTransformer::transformEntity);
@@ -703,7 +703,9 @@ public class ClassTransformer implements IClassTransformer, Opcodes {
 		}));
 	}
 
+	@Deprecated
 	private static byte[] transformGuiContainer(byte[] basicClass) {
+		//Insert ASMHooks.drawInvalidSlotOverlays(this) before every drawGuiContainerForegroundLayer call in drawScreen
 		MethodSignature sig = new MethodSignature("drawScreen", "func_73863_a", "(IIF)V");
 		MethodSignature target = new MethodSignature("drawGuiContainerForegroundLayer", "func_146979_b", "(II)V");
 

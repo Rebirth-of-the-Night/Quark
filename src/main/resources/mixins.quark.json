@@ -34,6 +34,7 @@
     "colorrunes.RenderItemMixin",
     "emotes.ModelBipedMixin",
     "morebannerlayers.ItemBannerMixin",
-    "pistonsmovetes.TileEntityPistonRendererMixin"
+    "pistonsmovetes.TileEntityPistonRendererMixin",
+    "showinvalidslots.GuiContainerMixin"
   ]
 }
