@@ -68,7 +68,7 @@ public class ClassTransformer implements IClassTransformer, Opcodes {
 		registerLegacy("net.minecraft.tileentity.TileEntityPiston", ClassTransformer::transformTileEntityPiston);
 
 		// For Pistons Push and Pull Items
-		register("net.minecraft.tileentity.TileEntityPiston", ClassTransformer::transformTileEntityPistonUpdate);
+		registerLegacy("net.minecraft.tileentity.TileEntityPiston", ClassTransformer::transformTileEntityPistonUpdate);
 		registerLegacy("net.minecraft.client.renderer.tileentity.TileEntityPistonRenderer", ClassTransformer::transformTileEntityPistonRenderer);
 
 		// For Improved Sleeping
@@ -512,7 +512,9 @@ public class ClassTransformer implements IClassTransformer, Opcodes {
 		return transClass;
 	}
 
+	@Deprecated
 	private static byte[] transformTileEntityPistonUpdate(byte[] basicClass) {
+		//Insert ASMHooks.onPistonUpdate(this) at the start of 'update'
 		MethodSignature updateSig = new MethodSignature("update", "func_73660_a", "()V");
 
 		return transform(basicClass, forMethod(updateSig, (MethodNode method) -> { // Action

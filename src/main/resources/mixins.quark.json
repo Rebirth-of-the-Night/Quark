@@ -16,7 +16,8 @@
     "chainlinkage.EntityMixin",
     "pistonlogic.BlockPistonBaseMixin",
     "pistonsmovetes.BlockPistonBaseMixin",
-    "pistonsmovetes.TileEntityPistonMixin"
+    "pistonsmovetes.TileEntityPistonMixin",
+    "pistonspushpullitems.TileEntityPistonMixin"
   ],
   "client": [
     "boatsails.RenderBoatMixin",
