@@ -100,7 +100,7 @@ public class ClassTransformer implements IClassTransformer, Opcodes {
 		register("net.minecraft.entity.item.EntityItem", ClassTransformer::transformEntityItem);
 
 		// For Extra Potions
-		register("net.minecraft.client.gui.inventory.GuiBeacon$PowerButton", ClassTransformer::transformBeaconButton);
+		registerLegacy("net.minecraft.client.gui.inventory.GuiBeacon$PowerButton", ClassTransformer::transformBeaconButton);
 
 		// For Better Nausea
 		register("net.minecraft.client.renderer.EntityRenderer", ClassTransformer::transformEntityRenderer);
@@ -812,7 +812,11 @@ public class ClassTransformer implements IClassTransformer, Opcodes {
 		}));
 	}
 
+	@Deprecated
 	private static byte[] transformBeaconButton(byte[] basicClass) {
+		//Add drawButton to GuiBeacon.PowerButton: return if ASMHooks.renderBeaconButton(this, this$0, mc, mouseX, mouseY, partialTicks), else call super
+		//If drawButton already exists, the hook is inserted at its start and returns if the hook returns false
+		//(this$0 is called field_146150_o outside of dev)
 		MethodSignature sig = new MethodSignature("drawButton", "func_191745_a", "(Lnet/minecraft/client/Minecraft;IIF)V");
 		MethodSignature checkAgainst = new MethodSignature("", "func_146111_b", "(II)V");
 

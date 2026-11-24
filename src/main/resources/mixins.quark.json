@@ -34,6 +34,7 @@
     "colorrunes.LayerArmorBaseMixin",
     "colorrunes.RenderItemMixin",
     "emotes.ModelBipedMixin",
+    "extrapotions.GuiBeaconButtonMixin",
     "morebannerlayers.ItemBannerMixin",
     "pistonsmovetes.TileEntityPistonRendererMixin",
     "showinvalidslots.GuiContainerMixin"
