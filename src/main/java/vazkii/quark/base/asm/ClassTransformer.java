@@ -49,10 +49,10 @@ public class ClassTransformer implements IClassTransformer, Opcodes {
 		registerLegacy("net.minecraft.client.renderer.entity.layers.LayerArmorBase", ClassTransformer::transformLayerArmorBase);
 
 		// For Boat Sails and Chain Linkage
-		register("net.minecraft.client.renderer.entity.RenderBoat", ClassTransformer::transformRenderBoat);
-		register("net.minecraft.entity.item.EntityBoat", ClassTransformer::transformEntityBoat);
-		register("net.minecraft.entity.item.EntityMinecart", ClassTransformer::transformEntityMinecart);
-		register("net.minecraft.client.renderer.entity.RenderManager", ClassTransformer::transformRenderManager);
+		registerLegacy("net.minecraft.client.renderer.entity.RenderBoat", ClassTransformer::transformRenderBoat);
+		registerLegacy("net.minecraft.entity.item.EntityBoat", ClassTransformer::transformEntityBoat);
+		registerLegacy("net.minecraft.entity.item.EntityMinecart", ClassTransformer::transformEntityMinecart);
+		registerLegacy("net.minecraft.client.renderer.entity.RenderManager", ClassTransformer::transformRenderManager);
 
 		// For Piston Block Breakers and Pistons Move TEs
 		register("net.minecraft.block.BlockPistonBase", ClassTransformer::transformBlockPistonBase);
@@ -84,8 +84,11 @@ public class ClassTransformer implements IClassTransformer, Opcodes {
 		// For Show Invalid Slots
 		register("net.minecraft.client.gui.inventory.GuiContainer", ClassTransformer::transformGuiContainer);
 
-		// For Springy Slime & Boat Sails and Chain Linkage
+		// For Springy Slime
 		register("net.minecraft.entity.Entity", ClassTransformer::transformEntity);
+
+		// For Boat Sails and Chain Linkage
+		registerLegacy("net.minecraft.entity.Entity", ClassTransformer::transformEntityUpdate);
 
 		// For Items Flash Before Expiring
 		register("net.minecraft.entity.item.EntityItem", ClassTransformer::transformEntityItem);
@@ -236,7 +239,9 @@ public class ClassTransformer implements IClassTransformer, Opcodes {
 		return transClass;
 	}
 
+	@Deprecated
 	private static byte[] transformEntityBoat(byte[] basicClass) {
+		//Insert ASMHooks.boatDrops(this) after the first dropItemWithOffset call in attackEntityFrom
 		MethodSignature sig = new MethodSignature("attackEntityFrom", "func_70097_a", "(Lnet/minecraft/util/DamageSource;F)Z");
 
 		MethodSignature target = new MethodSignature("dropItemWithOffset", "func_145778_a", "(Lnet/minecraft/item/Item;IF)Lnet/minecraft/entity/item/EntityItem;");
@@ -256,7 +261,9 @@ public class ClassTransformer implements IClassTransformer, Opcodes {
 				})));
 	}
 
+	@Deprecated
 	private static byte[] transformEntityMinecart(byte[] basicClass) {
+		//Insert ASMHooks.minecartDrops(this) after the first entityDropItem call in killMinecart
 		MethodSignature sig = new MethodSignature("killMinecart", "func_94095_a", "(Lnet/minecraft/util/DamageSource;)V");
 
 		MethodSignature target = new MethodSignature("entityDropItem", "func_70099_a", "(Lnet/minecraft/item/ItemStack;F)Lnet/minecraft/entity/item/EntityItem;");
@@ -276,7 +283,9 @@ public class ClassTransformer implements IClassTransformer, Opcodes {
 				})));
 	}
 
+	@Deprecated
 	private static byte[] transformRenderManager(byte[] basicClass) {
+		//Insert ASMHooks.renderChain(render, x, y, z, entity, partialTicks) after the first Render.doRender call in renderEntity (render loaded as localvar #11, brittle)
 		MethodSignature sig = new MethodSignature("renderEntity", "func_188391_a", "(Lnet/minecraft/entity/Entity;DDDFFZ)V");
 
 		MethodSignature target = new MethodSignature("doRender", "func_76986_a", "(Lnet/minecraft/entity/Entity;DDDFF)V");
@@ -300,7 +309,9 @@ public class ClassTransformer implements IClassTransformer, Opcodes {
 				})));
 	}
 
+	@Deprecated
 	private static byte[] transformRenderBoat(byte[] basicClass) {
+		//Insert ASMHooks.renderBannerOnBoat(boat, partialTicks) after the first ModelBase.render/renderMultipass call in doRender
 		MethodSignature sig = new MethodSignature("doRender", "func_188300_b", "(Lnet/minecraft/entity/item/EntityBoat;DDDFF)V");
 
 		MethodSignature targetA = new MethodSignature("render", "func_78088_a", "(Lnet/minecraft/entity/Entity;FFFFFF)V");
@@ -667,7 +678,6 @@ public class ClassTransformer implements IClassTransformer, Opcodes {
 
 	private static byte[] transformEntity(byte[] basicClass) {
 		MethodSignature sig1 = new MethodSignature("move", "func_70091_d", "(Lnet/minecraft/entity/MoverType;DDD)V");
-		MethodSignature sig2 = new MethodSignature("onEntityUpdate", "func_70030_z", "()V");
 		MethodSignature target = new MethodSignature("doBlockCollisions", "func_145775_I", "()V");
 
 		return transform(basicClass, forMethod(sig1,
@@ -717,7 +727,15 @@ public class ClassTransformer implements IClassTransformer, Opcodes {
 					method.instructions.insert(node, newInstructions);
 					return false;
 				}
-		)), forMethod(sig2, (MethodNode method) -> {
+		)));
+	}
+
+	@Deprecated
+	private static byte[] transformEntityUpdate(byte[] basicClass) {
+		//Insert ASMHooks.onEntityUpdate(this) at the start of onEntityUpdate
+		MethodSignature sig = new MethodSignature("onEntityUpdate", "func_70030_z", "()V");
+
+		return transform(basicClass, forMethod(sig, (MethodNode method) -> {
 			InsnList newInstructions = new InsnList();
 
 			newInstructions.add(new VarInsnNode(ALOAD, 0));

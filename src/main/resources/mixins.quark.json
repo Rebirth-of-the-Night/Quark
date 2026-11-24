@@ -9,8 +9,15 @@
     "defaultRequire": 1
   },
   "mixins": [
+    "boatsails.EntityBoatMixin",
+    "boatsails.EntityMixin",
+    "chainlinkage.EntityBoatMixin",
+    "chainlinkage.EntityMinecartMixin",
+    "chainlinkage.EntityMixin"
   ],
   "client": [
+    "boatsails.RenderBoatMixin",
+    "chainlinkage.RenderManagerMixin",
     "colorrunes.LayerArmorBaseGlintMixin",
     "colorrunes.LayerArmorBaseMixin",
     "colorrunes.RenderItemMixin",
