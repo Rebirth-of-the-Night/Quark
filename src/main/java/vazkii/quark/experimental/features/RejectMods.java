@@ -24,7 +24,7 @@ public class RejectMods extends Feature {
 
 	@SuppressWarnings("ConstantConditions")
 	public static boolean accepts(Map<String, String> mods, Side remoteSide) {
-		if (!LibMisc.VERSION.equals("GRADLE:VERSION-GRADLE:BUILD") && !mods.get(LibMisc.MOD_ID).equals(LibMisc.VERSION))
+		if (!LibMisc.VERSION.equals(mods.get(LibMisc.MOD_ID)))
 			return false;
 		if (!ModuleLoader.isFeatureEnabled(RejectMods.class))
 			return true;

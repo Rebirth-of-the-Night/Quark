@@ -1,7 +1,7 @@
 [
 {
-  "modid": "quark",
-  "name": "Quark: RotN Edition",
+  "modid": "${modid}",
+  "name": "${name}",
   "description": "Small things.",
   "version": "${version}",
   "mcversion": "${mcversion}",
