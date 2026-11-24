@@ -24,6 +24,7 @@
     "pistonsmovetes.BlockPistonBaseMixin",
     "pistonsmovetes.TileEntityPistonMixin",
     "pistonspushpullitems.TileEntityPistonMixin",
+    "renderitemsinchat.ItemStackMixin",
     "springyslime.EntityMixin",
     "witchhat.EntityAITargetMixin"
   ],
@@ -40,6 +41,7 @@
     "extrapotions.GuiBeaconButtonMixin",
     "morebannerlayers.ItemBannerMixin",
     "pistonsmovetes.TileEntityPistonRendererMixin",
+    "renderitemsinchat.LightUtilMixin",
     "showinvalidslots.GuiContainerMixin"
   ]
 }

@@ -110,8 +110,8 @@ public class ClassTransformer implements IClassTransformer, Opcodes {
 		registerLegacy("net.minecraft.util.DamageSource", ClassTransformer::transformDamageSource);
 
 		// For Render Items In Chat
-		register("net.minecraft.item.ItemStack", ClassTransformer::transformItemStack);
-		register("net.minecraftforge.client.model.pipeline.LightUtil", ClassTransformer::transformLightUtil);
+		registerLegacy("net.minecraft.item.ItemStack", ClassTransformer::transformItemStack);
+		registerLegacy("net.minecraftforge.client.model.pipeline.LightUtil", ClassTransformer::transformLightUtil);
 
 		// For Hoe Sickles
 		register("net.minecraft.enchantment.Enchantment", ClassTransformer::transformEnchantment);
@@ -967,7 +967,9 @@ public class ClassTransformer implements IClassTransformer, Opcodes {
 		)));
 	}
 
+	@Deprecated
 	private static byte[] transformItemStack(byte[] basicClass) {
+		//Modify every return value of getTextComponent with ASMHooks.createStackComponent
 		MethodSignature sig1 = new MethodSignature("getTextComponent", "func_151000_E", "()Lnet/minecraft/util/text/ITextComponent;");
 
 		return transform(basicClass, forMethod(sig1, combine(
@@ -983,7 +985,9 @@ public class ClassTransformer implements IClassTransformer, Opcodes {
 		)));
 	}
 
+	@Deprecated
 	private static byte[] transformLightUtil(byte[] basicClass) {
+		//Replace the color param of renderQuadColor with ASMHooks.transformQuadRenderColor(color) at its start
 		MethodSignature sig1 = new MethodSignature("renderQuadColor", "", "(Lnet/minecraft/client/renderer/BufferBuilder;Lnet/minecraft/client/renderer/block/model/BakedQuad;I)V");
 
 		return transform(basicClass, forMethod(sig1,
