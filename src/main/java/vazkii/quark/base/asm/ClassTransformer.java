@@ -91,7 +91,7 @@ public class ClassTransformer implements IClassTransformer, Opcodes {
 		registerLegacy("net.minecraft.client.gui.inventory.GuiContainer", ClassTransformer::transformGuiContainer);
 
 		// For Springy Slime
-		register("net.minecraft.entity.Entity", ClassTransformer::transformEntity);
+		registerLegacy("net.minecraft.entity.Entity", ClassTransformer::transformEntity);
 
 		// For Boat Sails and Chain Linkage
 		registerLegacy("net.minecraft.entity.Entity", ClassTransformer::transformEntityUpdate);
@@ -724,8 +724,12 @@ public class ClassTransformer implements IClassTransformer, Opcodes {
 				})));
 	}
 
+	@Deprecated
 	private static byte[] transformEntity(byte[] basicClass) {
+		//Insert ASMHooks.recordMotion(this) at the start of 'move'
 		MethodSignature sig1 = new MethodSignature("move", "func_70091_d", "(Lnet/minecraft/entity/MoverType;DDD)V");
+		//Insert ASMHooks.applyCollisionLogic(this, d2, d3, d4, x, y, z) after every doBlockCollisions call in move
+		//(d2-d4 are the attempted motion, found by local variable name (which never works in production) with fallback to localvars #14/#16/#18, brittle)
 		MethodSignature target = new MethodSignature("doBlockCollisions", "func_145775_I", "()V");
 
 		return transform(basicClass, forMethod(sig1,
