@@ -75,7 +75,7 @@ public class ClassTransformer implements IClassTransformer, Opcodes {
 		registerLegacy("net.minecraft.world.WorldServer", ClassTransformer::transformWorldServer);
 
 		// For Colored Lights
-		register("net.minecraft.client.renderer.BlockModelRenderer", ClassTransformer::transformBlockModelRenderer);
+		registerLegacy("net.minecraft.client.renderer.BlockModelRenderer", ClassTransformer::transformBlockModelRenderer);
 
 		// For More Banner Layers
 		register("net.minecraft.item.crafting.RecipesBanners$RecipeAddPattern", ClassTransformer::transformRecipeAddPattern);
@@ -593,7 +593,9 @@ public class ClassTransformer implements IClassTransformer, Opcodes {
 		}));
 	}
 
+	@Deprecated
 	private static byte[] transformBlockModelRenderer(byte[] basicClass) {
+		//Without OptiFine: insert ASMHooks.putColorsFlat(world, state, pos, buffer, quad, brightness) before the first putPosition call in renderQuadsFlat (quad loaded as localvar #18, brittle)
 		MethodSignature sig1 = new MethodSignature("renderQuadsFlat", "func_187496_a", "(Lnet/minecraft/world/IBlockAccess;Lnet/minecraft/block/state/IBlockState;Lnet/minecraft/util/math/BlockPos;IZLnet/minecraft/client/renderer/BufferBuilder;Ljava/util/List;Ljava/util/BitSet;)V");
 
 		MethodSignature target = new MethodSignature("putPosition", "func_178987_a", "(DDD)V");
