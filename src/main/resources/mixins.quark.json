@@ -21,7 +21,8 @@
     "pistonlogic.BlockPistonBaseMixin",
     "pistonsmovetes.BlockPistonBaseMixin",
     "pistonsmovetes.TileEntityPistonMixin",
-    "pistonspushpullitems.TileEntityPistonMixin"
+    "pistonspushpullitems.TileEntityPistonMixin",
+    "witchhat.EntityAITargetMixin"
   ],
   "client": [
     "betterfireeffect.RenderMixin",

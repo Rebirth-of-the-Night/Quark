@@ -85,7 +85,7 @@ public class ClassTransformer implements IClassTransformer, Opcodes {
 		registerLegacy("net.minecraft.client.renderer.entity.Render", ClassTransformer::transformRender);
 
 		// For Witch Hats
-		register("net.minecraft.entity.ai.EntityAITarget", ClassTransformer::transformEntityAITarget);
+		registerLegacy("net.minecraft.entity.ai.EntityAITarget", ClassTransformer::transformEntityAITarget);
 
 		// For Show Invalid Slots
 		register("net.minecraft.client.gui.inventory.GuiContainer", ClassTransformer::transformGuiContainer);
@@ -682,7 +682,9 @@ public class ClassTransformer implements IClassTransformer, Opcodes {
 		}));
 	}
 
+	@Deprecated
 	private static byte[] transformEntityAITarget(byte[] basicClass) {
+		//Return false at the start of isSuitableTarget if ASMHooks.hasWitchHat(attacker, target)
 		MethodSignature sig = new MethodSignature("isSuitableTarget", "func_179445_a", "(Lnet/minecraft/entity/EntityLiving;Lnet/minecraft/entity/EntityLivingBase;ZZ)Z");
 
 		return transform(basicClass, forMethod(sig, (MethodNode method) -> { // Action
