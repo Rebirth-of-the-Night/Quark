@@ -120,7 +120,7 @@ public class ClassTransformer implements IClassTransformer, Opcodes {
 		registerLegacy("net.minecraft.block.BlockDynamicLiquid", ClassTransformer::transformDynamicLiquid);
 
 		// For Ancient Tomes
-		register("net.minecraft.enchantment.EnchantmentHelper", ClassTransformer::transformEnchantmentHelper);
+		registerLegacy("net.minecraft.enchantment.EnchantmentHelper", ClassTransformer::transformEnchantmentHelper);
 
 		// For Parrot Eggs
 		register("net.minecraft.client.renderer.entity.layers.LayerEntityOnShoulder", ClassTransformer::transformLayerEntityOnShoulder);
@@ -1026,7 +1026,9 @@ public class ClassTransformer implements IClassTransformer, Opcodes {
 		)));
 	}
 
+	@Deprecated
 	private static byte[] transformEnchantmentHelper(byte[] basicClass) {
+		//Modify the result of every getEnchantmentTagList call in getEnchantments with ASMHooks.getEnchantmentsForStack(list, stack)
 		MethodSignature sig = new MethodSignature("getEnchantments", "func_82781_a", "(Lnet/minecraft/item/ItemStack;)Ljava/util/Map;");
 
 		MethodSignature target = new MethodSignature("getEnchantmentTagList", "func_77986_q", "()Lnet/minecraft/nbt/NBTTagList;");
