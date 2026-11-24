@@ -16,6 +16,7 @@
     "chainlinkage.EntityBoatMixin",
     "chainlinkage.EntityMinecartMixin",
     "chainlinkage.EntityMixin",
+    "improvedsleeping.WorldServerMixin",
     "pistonlogic.BlockPistonBaseMixin",
     "pistonsmovetes.BlockPistonBaseMixin",
     "pistonsmovetes.TileEntityPistonMixin",

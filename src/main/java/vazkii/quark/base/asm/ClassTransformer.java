@@ -72,7 +72,7 @@ public class ClassTransformer implements IClassTransformer, Opcodes {
 		registerLegacy("net.minecraft.client.renderer.tileentity.TileEntityPistonRenderer", ClassTransformer::transformTileEntityPistonRenderer);
 
 		// For Improved Sleeping
-		register("net.minecraft.world.WorldServer", ClassTransformer::transformWorldServer);
+		registerLegacy("net.minecraft.world.WorldServer", ClassTransformer::transformWorldServer);
 
 		// For Colored Lights
 		register("net.minecraft.client.renderer.BlockModelRenderer", ClassTransformer::transformBlockModelRenderer);
@@ -559,8 +559,11 @@ public class ClassTransformer implements IClassTransformer, Opcodes {
 				}));
 	}
 
+	@Deprecated
 	private static byte[] transformWorldServer(byte[] basicClass) {
+		//At the start of areAllPlayersAsleep: r = ASMHooks.isEveryoneAsleep(this); if(r != 0) return r-1;
 		MethodSignature sig1 = new MethodSignature("areAllPlayersAsleep", "func_73056_e", "()Z");
+		//Insert ASMHooks.whenPlayersWake(this) at the start of wakeAllPlayers
 		MethodSignature sig2 = new MethodSignature("wakeAllPlayers", "func_73053_d", "()V");
 
 		return transform(basicClass, forMethod(sig1, (MethodNode method) -> { // Action
