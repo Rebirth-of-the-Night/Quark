@@ -58,18 +58,18 @@ public class ClassTransformer implements IClassTransformer, Opcodes {
 		registerLegacy("net.minecraft.block.BlockPistonBase", ClassTransformer::transformPistonStructureHelper);
 
 		// For Pistons Move TEs
-		register("net.minecraft.block.BlockPistonBase", ClassTransformer::transformBlockPistonBase);
+		registerLegacy("net.minecraft.block.BlockPistonBase", ClassTransformer::transformBlockPistonBase);
 
 		// For Better Craft Shifting
 		register("net.minecraft.inventory.ContainerWorkbench", ClassTransformer::transformContainerWorkbench);
 		register("net.minecraft.inventory.ContainerMerchant", ClassTransformer::transformContainerMerchant);
 
 		// For Pistons Move TEs
-		register("net.minecraft.tileentity.TileEntityPiston", ClassTransformer::transformTileEntityPiston);
+		registerLegacy("net.minecraft.tileentity.TileEntityPiston", ClassTransformer::transformTileEntityPiston);
 
 		// For Pistons Push and Pull Items
 		register("net.minecraft.tileentity.TileEntityPiston", ClassTransformer::transformTileEntityPistonUpdate);
-		register("net.minecraft.client.renderer.tileentity.TileEntityPistonRenderer", ClassTransformer::transformTileEntityPistonRenderer);
+		registerLegacy("net.minecraft.client.renderer.tileentity.TileEntityPistonRenderer", ClassTransformer::transformTileEntityPistonRenderer);
 
 		// For Improved Sleeping
 		register("net.minecraft.world.WorldServer", ClassTransformer::transformWorldServer);
@@ -340,8 +340,11 @@ public class ClassTransformer implements IClassTransformer, Opcodes {
 				})));
 	}
 
+	@Deprecated
 	private static byte[] transformBlockPistonBase(byte[] basicClass) {
+		//Modify the result of the first Block.hasTileEntity call in canPush with ASMHooks.shouldPistonMoveTE(result, state)
 		MethodSignature sig1 = new MethodSignature("canPush", "func_185646_a", "(Lnet/minecraft/block/state/IBlockState;Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/util/EnumFacing;ZLnet/minecraft/util/EnumFacing;)Z");
+		//Insert ASMHooks.postPistonPush(helper, world, facing, extending) before the first getBlocksToMove call in doMove (helper loaded as localvar #5, brittle)
 		MethodSignature sig2 = new MethodSignature("doMove", "func_176319_a", "(Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/util/EnumFacing;Z)Z");
 
 		String targetClazz = "net/minecraft/block/state/BlockPistonStructureHelper";
@@ -479,7 +482,9 @@ public class ClassTransformer implements IClassTransformer, Opcodes {
 				})));
 	}
 
+	@Deprecated
 	private static byte[] transformTileEntityPiston(byte[] basicClass) {
+		//Replace the first World.setBlockState call in 'clearPistonTileEntity' and 'update' with ASMHooks.setPistonBlock(world, pos, state, flags)
 		MethodSignature clearPistonTileEntitySig = new MethodSignature("clearPistonTileEntity", "func_145866_f", "()V");
 		MethodSignature updateSig = new MethodSignature("update", "func_73660_a", "()V");
 
@@ -522,7 +527,9 @@ public class ClassTransformer implements IClassTransformer, Opcodes {
 		}));
 	}
 
+	@Deprecated
 	private static byte[] transformTileEntityPistonRenderer(byte[] basicClass) {
+		//Return at the start of 'render' if ASMHooks.renderPistonBlock(te, x, y, z, partialTicks) returns true
 		MethodSignature sig = new MethodSignature("render", "func_192841_a", "(Lnet/minecraft/tileentity/TileEntityPiston;DDDFIF)V");
 
 		MethodSignature target = new MethodSignature("draw", "func_78381_a", "()V");

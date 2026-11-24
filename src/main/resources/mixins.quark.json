@@ -14,7 +14,9 @@
     "chainlinkage.EntityBoatMixin",
     "chainlinkage.EntityMinecartMixin",
     "chainlinkage.EntityMixin",
-    "pistonlogic.BlockPistonBaseMixin"
+    "pistonlogic.BlockPistonBaseMixin",
+    "pistonsmovetes.BlockPistonBaseMixin",
+    "pistonsmovetes.TileEntityPistonMixin"
   ],
   "client": [
     "boatsails.RenderBoatMixin",
@@ -22,6 +24,7 @@
     "colorrunes.LayerArmorBaseGlintMixin",
     "colorrunes.LayerArmorBaseMixin",
     "colorrunes.RenderItemMixin",
-    "emotes.ModelBipedMixin"
+    "emotes.ModelBipedMixin",
+    "pistonsmovetes.TileEntityPistonRendererMixin"
   ]
 }
