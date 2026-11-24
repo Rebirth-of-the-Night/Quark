@@ -18,6 +18,8 @@
     "chainlinkage.EntityMixin",
     "improvedsleeping.WorldServerMixin",
     "morebannerlayers.RecipeAddPatternMixin",
+    "pickarang.DamageSourceMixin",
+    "pickarang.EnchantmentDamageMixin",
     "pistonlogic.BlockPistonBaseMixin",
     "pistonsmovetes.BlockPistonBaseMixin",
     "pistonsmovetes.TileEntityPistonMixin",

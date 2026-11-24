@@ -106,8 +106,8 @@ public class ClassTransformer implements IClassTransformer, Opcodes {
 		registerLegacy("net.minecraft.client.renderer.EntityRenderer", ClassTransformer::transformEntityRenderer);
 
 		// For Pickarangs
-		register("net.minecraft.enchantment.EnchantmentDamage", ClassTransformer::transformSharpness);
-		register("net.minecraft.util.DamageSource", ClassTransformer::transformDamageSource);
+		registerLegacy("net.minecraft.enchantment.EnchantmentDamage", ClassTransformer::transformSharpness);
+		registerLegacy("net.minecraft.util.DamageSource", ClassTransformer::transformDamageSource);
 
 		// For Render Items In Chat
 		register("net.minecraft.item.ItemStack", ClassTransformer::transformItemStack);
@@ -929,7 +929,9 @@ public class ClassTransformer implements IClassTransformer, Opcodes {
 		)));
 	}
 
+	@Deprecated
 	private static byte[] transformSharpness(byte[] basicClass) {
+		//OR every return value of EnchantmentDamage.canApply with ASMHooks.canSharpnessApply(stack)
 		MethodSignature sig = new MethodSignature("canApply", "func_92089_a", "(Lnet/minecraft/item/ItemStack;)Z");
 
 		return transform(basicClass, forMethod(sig, combine(
@@ -1058,7 +1060,9 @@ public class ClassTransformer implements IClassTransformer, Opcodes {
 		)));
 	}
 
+	@Deprecated
 	private static byte[] transformDamageSource(byte[] basicClass) {
+		//Return ASMHooks.createPlayerDamage(player) at the start of causePlayerDamage if it isn't null
 		MethodSignature sig = new MethodSignature("causePlayerDamage", "func_76365_a", "(Lnet/minecraft/entity/player/EntityPlayer;)Lnet/minecraft/util/DamageSource;");
 
 		return transform(basicClass, forMethod(sig, (MethodNode method) -> { // Action
