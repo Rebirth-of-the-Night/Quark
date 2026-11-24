@@ -11,5 +11,6 @@
   "mixins": [
   ],
   "client": [
+    "emotes.ModelBipedMixin"
   ]
 }

@@ -42,7 +42,7 @@ public class ClassTransformer implements IClassTransformer, Opcodes {
 
 	static {
 		// For Emotes
-		register("net.minecraft.client.model.ModelBiped", ClassTransformer::transformModelBiped);
+		registerLegacy("net.minecraft.client.model.ModelBiped", ClassTransformer::transformModelBiped);
 
 		// For Color Runes
 		register("net.minecraft.client.renderer.RenderItem", ClassTransformer::transformRenderItem);
@@ -142,7 +142,9 @@ public class ClassTransformer implements IClassTransformer, Opcodes {
 		return basicClass;
 	}
 
+	@Deprecated
 	private static byte[] transformModelBiped(byte[] basicClass) {
+		//Insert ASMHooks.updateEmotes(entity) before return of setRotationAngles (entity loaded as localvar #7, brittle)
 		MethodSignature sig = new MethodSignature("setRotationAngles", "func_78087_a", "(FFFFFFLnet/minecraft/entity/Entity;)V");
 
 		return transform(basicClass, forMethod(sig, combine(
