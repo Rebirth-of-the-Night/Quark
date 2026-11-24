@@ -126,8 +126,8 @@ public class ClassTransformer implements IClassTransformer, Opcodes {
 		registerLegacy("net.minecraft.client.renderer.entity.layers.LayerEntityOnShoulder", ClassTransformer::transformLayerEntityOnShoulder);
 
 		// For Glowing Totems
-		register("net.minecraft.client.renderer.RenderGlobal", ClassTransformer::transformRenderGlobal);
-		register("meldexun.renderlib.renderer.entity.EntityRenderer", ClassTransformer::transformRenderLibEntityRenderer); // RenderLib compat hack
+		registerLegacy("net.minecraft.client.renderer.RenderGlobal", ClassTransformer::transformRenderGlobal);
+		registerLegacy("meldexun.renderlib.renderer.entity.EntityRenderer", ClassTransformer::transformRenderLibEntityRenderer); // RenderLib compat hack
 	}
 
 	private static void register(String className, Transformer transformer) {
@@ -1096,7 +1096,9 @@ public class ClassTransformer implements IClassTransformer, Opcodes {
 		));
 	}
 
+	@Deprecated
 	private static byte[] transformRenderGlobal(byte[] basicClass) {
+		//Return true at the start of isOutlineActive if ASMHooks.isOutlineActive(entity, viewer)
 		MethodSignature sig = new MethodSignature("isOutlineActive", "func_184383_a", "(Lnet/minecraft/entity/Entity;Lnet/minecraft/entity/Entity;Lnet/minecraft/client/renderer/culling/ICamera;)Z");
 
 		return transform(basicClass, forMethod(sig,
@@ -1119,7 +1121,10 @@ public class ClassTransformer implements IClassTransformer, Opcodes {
 		));
 	}
 
+	@Deprecated
 	private static byte[] transformRenderLibEntityRenderer(byte[] basicClass) {
+		//Return true in RenderLib's EntityRenderer.shouldRenderOutlines if ASMHooks.isOutlineActive(entity, mc.player)
+		//(inserted after Minecraft.getMinecraft() is first stored in a local)
 		MethodSignature sig = new MethodSignature("shouldRenderOutlines", "shouldRenderOutlines", "(Lnet/minecraft/entity/Entity;)Z");
 
 		MethodSignature target = new MethodSignature("getMinecraft", "func_71410_x", "()Lnet/minecraft/client/Minecraft;");

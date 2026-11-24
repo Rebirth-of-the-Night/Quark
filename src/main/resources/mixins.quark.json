@@ -42,10 +42,14 @@
     "colorrunes.RenderItemMixin",
     "emotes.ModelBipedMixin",
     "extrapotions.GuiBeaconButtonMixin",
+    "glowingitems.RenderGlobalMixin",
+    "glowingitems.RenderLibEntityRendererMixin",
     "morebannerlayers.ItemBannerMixin",
     "parroteggs.LayerEntityOnShoulderMixin",
     "pistonsmovetes.TileEntityPistonRendererMixin",
     "renderitemsinchat.LightUtilMixin",
-    "showinvalidslots.GuiContainerMixin"
+    "showinvalidslots.GuiContainerMixin",
+    "totemofholding.RenderGlobalMixin",
+    "totemofholding.RenderLibEntityRendererMixin"
   ]
 }

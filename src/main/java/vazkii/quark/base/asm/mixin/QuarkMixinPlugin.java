@@ -27,12 +27,14 @@ public class QuarkMixinPlugin implements IMixinConfigPlugin {
 
 	private Configuration config;
 	private boolean hasOptifine;
+	private boolean hasRenderLib;
 
 	@Override
 	public void onLoad(String mixinPackage) {
 		// read only, never saved. quark writes the full file itself during preInit
 		config = new Configuration(new File(Launch.minecraftHome, "config/quark.cfg"));
 		hasOptifine = Launch.classLoader.getResource("optifine/OptiFineTweaker.class") != null;
+		hasRenderLib = Launch.classLoader.getResource("meldexun/renderlib/asm/RenderLibPlugin.class") != null;
 	}
 
 	@Override
@@ -43,6 +45,11 @@ public class QuarkMixinPlugin implements IMixinConfigPlugin {
 
 		if (hasOptifine && !getValue(toggle, "compatibleWithOptifine", true)) {
             LOGGER.debug("Skipping {}, OptiFine is present", mixinClassName);
+			return false;
+		}
+
+		if (!hasRenderLib && getValue(toggle, "requiresRenderLib", false)) {
+            LOGGER.debug("Skipping {}, RenderLib is not present", mixinClassName);
 			return false;
 		}
 

@@ -71,6 +71,7 @@ dependencies {
     implementation fg.deobf("curse.maven:autoreglib-${autoreglib_version}")
     implementation fg.deobf("curse.maven:jei-${jei_version}")
     compileOnly fg.deobf("curse.maven:baubles-${baubles_version}")
+    compileOnly fg.deobf("curse.maven:renderlib-${renderlib_version}")
 }
 
 mixin {
