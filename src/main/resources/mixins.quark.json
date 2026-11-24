@@ -20,6 +20,7 @@
     "hoesickle.EnchantmentMixin",
     "improvedsleeping.WorldServerMixin",
     "ironladders.BlockDynamicLiquidMixin",
+    "itemsflash.EntityItemMixin",
     "morebannerlayers.RecipeAddPatternMixin",
     "pickarang.DamageSourceMixin",
     "pickarang.EnchantmentDamageMixin",

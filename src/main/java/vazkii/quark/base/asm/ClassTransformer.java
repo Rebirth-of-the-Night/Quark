@@ -97,7 +97,7 @@ public class ClassTransformer implements IClassTransformer, Opcodes {
 		registerLegacy("net.minecraft.entity.Entity", ClassTransformer::transformEntityUpdate);
 
 		// For Items Flash Before Expiring
-		register("net.minecraft.entity.item.EntityItem", ClassTransformer::transformEntityItem);
+		registerLegacy("net.minecraft.entity.item.EntityItem", ClassTransformer::transformEntityItem);
 
 		// For Extra Potions
 		registerLegacy("net.minecraft.client.gui.inventory.GuiBeacon$PowerButton", ClassTransformer::transformBeaconButton);
@@ -798,7 +798,9 @@ public class ClassTransformer implements IClassTransformer, Opcodes {
 		}));
 	}
 
+	@Deprecated
 	private static byte[] transformEntityItem(byte[] basicClass) {
+		//Insert ASMHooks.ensureUpdatedItemAge(this) at the start of onUpdate
 		MethodSignature sig = new MethodSignature("onUpdate", "func_70071_h_", "()V");
 
 		return transform(basicClass, forMethod(sig, (MethodNode method) -> { // Action
