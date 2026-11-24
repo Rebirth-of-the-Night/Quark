@@ -117,7 +117,7 @@ public class ClassTransformer implements IClassTransformer, Opcodes {
 		registerLegacy("net.minecraft.enchantment.Enchantment", ClassTransformer::transformEnchantment);
 
 		// For Iron Ladders
-		register("net.minecraft.block.BlockDynamicLiquid", ClassTransformer::transformDynamicLiquid);
+		registerLegacy("net.minecraft.block.BlockDynamicLiquid", ClassTransformer::transformDynamicLiquid);
 
 		// For Ancient Tomes
 		register("net.minecraft.enchantment.EnchantmentHelper", ClassTransformer::transformEnchantmentHelper);
@@ -1006,7 +1006,9 @@ public class ClassTransformer implements IClassTransformer, Opcodes {
 		));
 	}
 
+	@Deprecated
 	private static byte[] transformDynamicLiquid(byte[] basicClass) {
+		//OR every return value of isBlocked with ASMHooks.isBlockNotBrokenByWater(block) (block loaded as localvar #4, brittle)
 		MethodSignature sig = new MethodSignature("isBlocked", "func_176372_g", "(Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/state/IBlockState;)Z");
 
 		return transform(basicClass, forMethod(sig, combine(
