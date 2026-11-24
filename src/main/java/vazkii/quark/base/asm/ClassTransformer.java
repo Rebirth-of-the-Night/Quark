@@ -54,7 +54,10 @@ public class ClassTransformer implements IClassTransformer, Opcodes {
 		registerLegacy("net.minecraft.entity.item.EntityMinecart", ClassTransformer::transformEntityMinecart);
 		registerLegacy("net.minecraft.client.renderer.entity.RenderManager", ClassTransformer::transformRenderManager);
 
-		// For Piston Block Breakers and Pistons Move TEs
+		// For Piston Logic Replacement
+		registerLegacy("net.minecraft.block.BlockPistonBase", ClassTransformer::transformPistonStructureHelper);
+
+		// For Pistons Move TEs
 		register("net.minecraft.block.BlockPistonBase", ClassTransformer::transformBlockPistonBase);
 
 		// For Better Craft Shifting
@@ -63,6 +66,9 @@ public class ClassTransformer implements IClassTransformer, Opcodes {
 
 		// For Pistons Move TEs
 		register("net.minecraft.tileentity.TileEntityPiston", ClassTransformer::transformTileEntityPiston);
+
+		// For Pistons Push and Pull Items
+		register("net.minecraft.tileentity.TileEntityPiston", ClassTransformer::transformTileEntityPistonUpdate);
 		register("net.minecraft.client.renderer.tileentity.TileEntityPistonRenderer", ClassTransformer::transformTileEntityPistonRenderer);
 
 		// For Improved Sleeping
@@ -337,13 +343,11 @@ public class ClassTransformer implements IClassTransformer, Opcodes {
 	private static byte[] transformBlockPistonBase(byte[] basicClass) {
 		MethodSignature sig1 = new MethodSignature("canPush", "func_185646_a", "(Lnet/minecraft/block/state/IBlockState;Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/util/EnumFacing;ZLnet/minecraft/util/EnumFacing;)Z");
 		MethodSignature sig2 = new MethodSignature("doMove", "func_176319_a", "(Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/util/EnumFacing;Z)Z");
-		MethodSignature sig3 = new MethodSignature("checkForMove", "func_176316_e", "(Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/state/IBlockState;)V");
 
 		String targetClazz = "net/minecraft/block/state/BlockPistonStructureHelper";
 
 		MethodSignature target = new MethodSignature("hasTileEntity", "", "(Lnet/minecraft/block/state/IBlockState;)Z");
 		MethodSignature target2 = new MethodSignature("getBlocksToMove", "func_177254_c", "()Ljava/util/List;");
-		MethodSignature target3 = new MethodSignature("<init>", "", "(Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/util/EnumFacing;Z)V");
 
 		return transform(basicClass,
 				forMethod(sig1, combine(
@@ -374,7 +378,21 @@ public class ClassTransformer implements IClassTransformer, Opcodes {
 
 							method.instructions.insertBefore(node, newInstructions);
 							return true;
-						})),
+						})));
+	}
+
+	@Deprecated
+	private static byte[] transformPistonStructureHelper(byte[] basicClass) {
+		//Modify the first BlockPistonStructureHelper constructed in doMove and checkForMove with ASMHooks.transformStructureHelper(helper, world, pos, facing, extending)
+		//(checkForMove has no 'extending' param, so it uses 'true'. param 'facing' loaded as localvar #4, brittle)
+		MethodSignature sig2 = new MethodSignature("doMove", "func_176319_a", "(Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/util/EnumFacing;Z)Z");
+		MethodSignature sig3 = new MethodSignature("checkForMove", "func_176316_e", "(Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/state/IBlockState;)V");
+
+		String targetClazz = "net/minecraft/block/state/BlockPistonStructureHelper";
+
+		MethodSignature target3 = new MethodSignature("<init>", "", "(Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/util/EnumFacing;Z)V");
+
+		return transform(basicClass,
 				forMethod(sig2, combine(
 						(AbstractInsnNode node) -> { // Filter
 							return node.getOpcode() == INVOKESPECIAL && ((MethodInsnNode) node).owner.equals(targetClazz) && target3.matches((MethodInsnNode) node);
@@ -482,7 +500,17 @@ public class ClassTransformer implements IClassTransformer, Opcodes {
 					return true;
 				});
 
-		MethodAction onUpdateAction = (MethodNode method) -> { // Action
+		byte[] transClass = basicClass;
+		transClass = transform(transClass, forMethod(clearPistonTileEntitySig, setPistonBlockAction));
+		transClass = transform(transClass, forMethod(updateSig, setPistonBlockAction));
+
+		return transClass;
+	}
+
+	private static byte[] transformTileEntityPistonUpdate(byte[] basicClass) {
+		MethodSignature updateSig = new MethodSignature("update", "func_73660_a", "()V");
+
+		return transform(basicClass, forMethod(updateSig, (MethodNode method) -> { // Action
 			InsnList newInstructions = new InsnList();
 
 			newInstructions.add(new VarInsnNode(ALOAD, 0));
@@ -491,14 +519,7 @@ public class ClassTransformer implements IClassTransformer, Opcodes {
 			method.instructions.insertBefore(method.instructions.getFirst(), newInstructions);
 
 			return true;
-		};
-
-		byte[] transClass = basicClass;
-		transClass = transform(transClass, forMethod(updateSig, onUpdateAction));
-		transClass = transform(transClass, forMethod(clearPistonTileEntitySig, setPistonBlockAction));
-		transClass = transform(transClass, forMethod(updateSig, setPistonBlockAction));
-
-		return transClass;
+		}));
 	}
 
 	private static byte[] transformTileEntityPistonRenderer(byte[] basicClass) {

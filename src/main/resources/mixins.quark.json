@@ -13,7 +13,8 @@
     "boatsails.EntityMixin",
     "chainlinkage.EntityBoatMixin",
     "chainlinkage.EntityMinecartMixin",
-    "chainlinkage.EntityMixin"
+    "chainlinkage.EntityMixin",
+    "pistonlogic.BlockPistonBaseMixin"
   ],
   "client": [
     "boatsails.RenderBoatMixin",
