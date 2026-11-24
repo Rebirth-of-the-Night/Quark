@@ -73,15 +73,17 @@ public class BlockRoots extends BlockMod implements IQuarkBlock, IShearable, IGr
 			grow(worldIn, rand, pos, state);
 	}
 	
-	public static void growMany(World world, BlockPos pos, IBlockState state, float stopChance, boolean avoidCascade) {
+	public static void growMany(World world, BlockPos pos, IBlockState state, float stopChance, boolean unused) {
 		BlockPos next = pos;
 		
 		do {
-			next = growAndReturnLastPos(world, next, state, avoidCascade);
+			next = growAndReturnLastPos(world, next, state, unused);
 		} while (next != null && world.rand.nextFloat() >= stopChance);
 	}
 
-	public static BlockPos growAndReturnLastPos(World world, BlockPos pos, IBlockState state, boolean avoidCascade) {
+	public static BlockPos growAndReturnLastPos(World world, BlockPos pos, IBlockState state, boolean unused) {
+		if (!world.isAreaLoaded(pos, 2)) return null;
+
 		BlockPos down = pos.down();
 		
 		for (EnumFacing facing : EnumFacing.HORIZONTALS) {
@@ -89,11 +91,9 @@ public class BlockRoots extends BlockMod implements IQuarkBlock, IShearable, IGr
 			if (state.getValue(prop)) {
 				BlockPos ret = growInFacing(world, down, facing);
 				if (ret != null) {
-					if (!avoidCascade || world.isBlockLoaded(ret)) {
-						IBlockState setState = nextState(world.rand).withProperty(prop, true);
-						world.setBlockState(ret, setState);
-						return ret;
-					}
+					IBlockState setState = nextState(world.rand).withProperty(prop, true);
+					world.setBlockState(ret, setState);
+					return ret;
 				}
 				break;
 			}
