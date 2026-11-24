@@ -11,6 +11,7 @@
 package vazkii.quark.base.asm;
 
 import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin;
+import vazkii.quark.base.asm.mixin.QuarkMixins;
 
 import java.util.Map;
 
@@ -40,6 +41,10 @@ public class LoadingPlugin implements IFMLLoadingPlugin {
 	@Override
 	public void injectData(Map<String, Object> data) {
 		runtimeDeobfEnabled = (Boolean) data.get("runtimeDeobfuscationEnabled");
+
+		// called after all coremods are constructed, so any mixin provider is on the classpath by now
+		if (QuarkMixins.enabled())
+			QuarkMixins.Loader.load();
 	}
 
 	@Override

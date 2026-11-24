@@ -20,11 +20,14 @@ import org.objectweb.asm.util.Printer;
 import org.objectweb.asm.util.Textifier;
 import org.objectweb.asm.util.TraceClassVisitor;
 import org.objectweb.asm.util.TraceMethodVisitor;
+import vazkii.quark.base.asm.mixin.QuarkMixins;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
@@ -35,94 +38,105 @@ public class ClassTransformer implements IClassTransformer, Opcodes {
 
 	private static final String ASM_HOOKS = "vazkii/quark/base/asm/ASMHooks";
 
-	private static final Map<String, Transformer> transformers = new HashMap<>();
+	private static final Map<String, List<Transformer>> transformers = new HashMap<>();
 
 	static {
 		// For Emotes
-		transformers.put("net.minecraft.client.model.ModelBiped", ClassTransformer::transformModelBiped);
+		register("net.minecraft.client.model.ModelBiped", ClassTransformer::transformModelBiped);
 
 		// For Color Runes
-		transformers.put("net.minecraft.client.renderer.RenderItem", ClassTransformer::transformRenderItem);
-		transformers.put("net.minecraft.client.renderer.entity.layers.LayerArmorBase", ClassTransformer::transformLayerArmorBase);
+		register("net.minecraft.client.renderer.RenderItem", ClassTransformer::transformRenderItem);
+		register("net.minecraft.client.renderer.entity.layers.LayerArmorBase", ClassTransformer::transformLayerArmorBase);
 
 		// For Boat Sails and Chain Linkage
-		transformers.put("net.minecraft.client.renderer.entity.RenderBoat", ClassTransformer::transformRenderBoat);
-		transformers.put("net.minecraft.entity.item.EntityBoat", ClassTransformer::transformEntityBoat);
-		transformers.put("net.minecraft.entity.item.EntityMinecart", ClassTransformer::transformEntityMinecart);
-		transformers.put("net.minecraft.client.renderer.entity.RenderManager", ClassTransformer::transformRenderManager);
+		register("net.minecraft.client.renderer.entity.RenderBoat", ClassTransformer::transformRenderBoat);
+		register("net.minecraft.entity.item.EntityBoat", ClassTransformer::transformEntityBoat);
+		register("net.minecraft.entity.item.EntityMinecart", ClassTransformer::transformEntityMinecart);
+		register("net.minecraft.client.renderer.entity.RenderManager", ClassTransformer::transformRenderManager);
 
 		// For Piston Block Breakers and Pistons Move TEs
-		transformers.put("net.minecraft.block.BlockPistonBase", ClassTransformer::transformBlockPistonBase);
+		register("net.minecraft.block.BlockPistonBase", ClassTransformer::transformBlockPistonBase);
 
 		// For Better Craft Shifting
-		transformers.put("net.minecraft.inventory.ContainerWorkbench", ClassTransformer::transformContainerWorkbench);
-		transformers.put("net.minecraft.inventory.ContainerMerchant", ClassTransformer::transformContainerMerchant);
+		register("net.minecraft.inventory.ContainerWorkbench", ClassTransformer::transformContainerWorkbench);
+		register("net.minecraft.inventory.ContainerMerchant", ClassTransformer::transformContainerMerchant);
 
 		// For Pistons Move TEs
-		transformers.put("net.minecraft.tileentity.TileEntityPiston", ClassTransformer::transformTileEntityPiston);
-		transformers.put("net.minecraft.client.renderer.tileentity.TileEntityPistonRenderer", ClassTransformer::transformTileEntityPistonRenderer);
+		register("net.minecraft.tileentity.TileEntityPiston", ClassTransformer::transformTileEntityPiston);
+		register("net.minecraft.client.renderer.tileentity.TileEntityPistonRenderer", ClassTransformer::transformTileEntityPistonRenderer);
 
 		// For Improved Sleeping
-		transformers.put("net.minecraft.world.WorldServer", ClassTransformer::transformWorldServer);
+		register("net.minecraft.world.WorldServer", ClassTransformer::transformWorldServer);
 
 		// For Colored Lights
-		transformers.put("net.minecraft.client.renderer.BlockModelRenderer", ClassTransformer::transformBlockModelRenderer);
+		register("net.minecraft.client.renderer.BlockModelRenderer", ClassTransformer::transformBlockModelRenderer);
 
 		// For More Banner Layers
-		transformers.put("net.minecraft.item.crafting.RecipesBanners$RecipeAddPattern", ClassTransformer::transformRecipeAddPattern);
-		transformers.put("net.minecraft.item.ItemBanner", ClassTransformer::transformItemBanner);
+		register("net.minecraft.item.crafting.RecipesBanners$RecipeAddPattern", ClassTransformer::transformRecipeAddPattern);
+		register("net.minecraft.item.ItemBanner", ClassTransformer::transformItemBanner);
 
 		// Better Fire Effect
-		transformers.put("net.minecraft.client.renderer.entity.Render", ClassTransformer::transformRender);
+		register("net.minecraft.client.renderer.entity.Render", ClassTransformer::transformRender);
 
 		// For Witch Hats
-		transformers.put("net.minecraft.entity.ai.EntityAITarget", ClassTransformer::transformEntityAITarget);
+		register("net.minecraft.entity.ai.EntityAITarget", ClassTransformer::transformEntityAITarget);
 
 		// For Show Invalid Slots
-		transformers.put("net.minecraft.client.gui.inventory.GuiContainer", ClassTransformer::transformGuiContainer);
+		register("net.minecraft.client.gui.inventory.GuiContainer", ClassTransformer::transformGuiContainer);
 
 		// For Springy Slime & Boat Sails and Chain Linkage
-		transformers.put("net.minecraft.entity.Entity", ClassTransformer::transformEntity);
+		register("net.minecraft.entity.Entity", ClassTransformer::transformEntity);
 
 		// For Items Flash Before Expiring
-		transformers.put("net.minecraft.entity.item.EntityItem", ClassTransformer::transformEntityItem);
+		register("net.minecraft.entity.item.EntityItem", ClassTransformer::transformEntityItem);
 
 		// For Extra Potions
-		transformers.put("net.minecraft.client.gui.inventory.GuiBeacon$PowerButton", ClassTransformer::transformBeaconButton);
+		register("net.minecraft.client.gui.inventory.GuiBeacon$PowerButton", ClassTransformer::transformBeaconButton);
 
 		// For Better Nausea
-		transformers.put("net.minecraft.client.renderer.EntityRenderer", ClassTransformer::transformEntityRenderer);
+		register("net.minecraft.client.renderer.EntityRenderer", ClassTransformer::transformEntityRenderer);
 
 		// For Pickarangs
-		transformers.put("net.minecraft.enchantment.EnchantmentDamage", ClassTransformer::transformSharpness);
-		transformers.put("net.minecraft.util.DamageSource", ClassTransformer::transformDamageSource);
+		register("net.minecraft.enchantment.EnchantmentDamage", ClassTransformer::transformSharpness);
+		register("net.minecraft.util.DamageSource", ClassTransformer::transformDamageSource);
 
 		// For Render Items In Chat
-		transformers.put("net.minecraft.item.ItemStack", ClassTransformer::transformItemStack);
-		transformers.put("net.minecraftforge.client.model.pipeline.LightUtil", ClassTransformer::transformLightUtil);
+		register("net.minecraft.item.ItemStack", ClassTransformer::transformItemStack);
+		register("net.minecraftforge.client.model.pipeline.LightUtil", ClassTransformer::transformLightUtil);
 
 		// For Hoe Sickles
-		transformers.put("net.minecraft.enchantment.Enchantment", ClassTransformer::transformEnchantment);
+		register("net.minecraft.enchantment.Enchantment", ClassTransformer::transformEnchantment);
 
 		// For Iron Ladders
-		transformers.put("net.minecraft.block.BlockDynamicLiquid", ClassTransformer::transformDynamicLiquid);
+		register("net.minecraft.block.BlockDynamicLiquid", ClassTransformer::transformDynamicLiquid);
 
 		// For Ancient Tomes
-		transformers.put("net.minecraft.enchantment.EnchantmentHelper", ClassTransformer::transformEnchantmentHelper);
+		register("net.minecraft.enchantment.EnchantmentHelper", ClassTransformer::transformEnchantmentHelper);
 
 		// For Parrot Eggs
-		transformers.put("net.minecraft.client.renderer.entity.layers.LayerEntityOnShoulder", ClassTransformer::transformLayerEntityOnShoulder);
+		register("net.minecraft.client.renderer.entity.layers.LayerEntityOnShoulder", ClassTransformer::transformLayerEntityOnShoulder);
 
 		// For Glowing Totems
-		transformers.put("net.minecraft.client.renderer.RenderGlobal", ClassTransformer::transformRenderGlobal);
-		transformers.put("meldexun.renderlib.renderer.entity.EntityRenderer", ClassTransformer::transformRenderLibEntityRenderer); // RenderLib compat hack
+		register("net.minecraft.client.renderer.RenderGlobal", ClassTransformer::transformRenderGlobal);
+		register("meldexun.renderlib.renderer.entity.EntityRenderer", ClassTransformer::transformRenderLibEntityRenderer); // RenderLib compat hack
+	}
+
+	private static void register(String className, Transformer transformer) {
+		transformers.computeIfAbsent(className, k -> new ArrayList<>()).add(transformer);
+	}
+
+	/** For patches that have a mixin replacement. Only applied if mixins can't be used. */
+	private static void registerLegacy(String className, Transformer transformer) {
+		register(className, basicClass -> QuarkMixins.enabled() ? basicClass : transformer.apply(basicClass));
 	}
 
 	@Override
 	public byte[] transform(String name, String transformedName, byte[] basicClass) {
-		if (transformers.containsKey(transformedName)) {
+		List<Transformer> classTransformers = transformers.get(transformedName);
+		if (classTransformers != null) {
 			log("Transforming " + transformedName);
-			return transformers.get(transformedName).apply(basicClass);
+			for (Transformer transformer : classTransformers)
+				basicClass = transformer.apply(basicClass);
 		}
 
 		return basicClass;
