@@ -3,12 +3,8 @@ package vazkii.quark.oddities.inventory;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.*;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandlerModifiable;
-import vazkii.aurelienribon.tweenengine.equations.Back;
-import vazkii.quark.base.module.ConfigHelper;
-import vazkii.quark.oddities.QuarkOddities;
 import vazkii.quark.oddities.feature.Backpacks;
 
 import javax.annotation.Nonnull;
@@ -79,7 +75,9 @@ public class ContainerBackpack extends ContainerPlayer {
 			} else if (slotType == EntityEquipmentSlot.OFFHAND && !this.inventorySlots.get(45).getHasStack()) {
 				if (!this.mergeItemStack(stack, 45, 46, false)) return ItemStack.EMPTY;
 			} else if (index < 36) {
-				if (!this.mergeItemStack(stack, 46, 73, false) && !this.mergeItemStack(stack, 36, 45, false)) return ItemStack.EMPTY;
+				if (Backpacks.ignoreShiftClick) {
+					if (!this.mergeItemStack(stack, 36, 45, false)) return ItemStack.EMPTY;
+				} else if (!this.mergeItemStack(stack, 46, 73, false) && !this.mergeItemStack(stack, 36, 45, false)) return ItemStack.EMPTY;
 			} else if (index < 73) {
 				if (!this.mergeItemStack(stack, 9, 36, false)) return ItemStack.EMPTY;
 			} else {
@@ -165,11 +163,6 @@ public class ContainerBackpack extends ContainerPlayer {
 	@Nonnull
 	@Override
 	public ItemStack slotClick(int slotId, int dragType, ClickType clickTypeIn, EntityPlayer player) {
-		if (Backpacks.ignoreShiftClick && clickTypeIn == ClickType.QUICK_MOVE && slotId < 36)
-		{
-			return player.inventoryContainer.slotClick(slotId, dragType, clickTypeIn, player);
-		}
-
 		SlotCachingItemHandler.cache(this);
 		ItemStack stack = super.slotClick(slotId, dragType, clickTypeIn, player);
 		SlotCachingItemHandler.applyCache(this);
