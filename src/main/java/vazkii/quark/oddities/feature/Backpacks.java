@@ -245,8 +245,11 @@ public class Backpacks extends Feature {
 	public static IItemHandlerModifiable getBackpackInventory(Entity e) {
 		ItemStack stack = null;
 		if (enableBaubles) {
-			if (e instanceof EntityPlayer)
-				stack = BaublesApi.getBaublesHandler((EntityPlayer) e).getStackInSlot(BaublesApi.isBaubleEquipped((EntityPlayer) e, backpack));
+			if (e instanceof EntityPlayer) {
+				int slot = BaublesApi.isBaubleEquipped((EntityPlayer) e, backpack);
+				if (slot != -1)
+					stack = BaublesApi.getBaublesHandler((EntityPlayer) e).getStackInSlot(slot);
+			}
 		} else {
 			if (e instanceof EntityLivingBase)
 				stack = ((EntityLivingBase) e).getItemStackFromSlot(EntityEquipmentSlot.CHEST);
