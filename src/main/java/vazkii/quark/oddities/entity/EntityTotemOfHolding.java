@@ -82,7 +82,7 @@ public class EntityTotemOfHolding extends Entity {
 					return false;
 			}
 
-			int drops = Math.min(storedItems.size(), TotemOfHolding.baseDropAmount + world.rand.nextInt(TotemOfHolding.randomBonusDrops));
+			int drops = Math.min(storedItems.size(), TotemOfHolding.baseDropAmount + world.rand.nextInt(TotemOfHolding.randomBonusDrops + 1));
 			
 			for (int counter = 0; counter < drops; counter++) {
 				ItemStack stack = storedItems.remove(0);
