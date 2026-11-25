@@ -39,11 +39,12 @@ public class ItemBackpackBaubles extends ItemBackpack implements IBauble, IRende
 			for (int i = 0; i < baubles.getSlots(); i++) {
 				if ((baubles.getStackInSlot(i) == null || baubles.getStackInSlot(i).isEmpty())
 						&& baubles.isItemValidForSlot(i, stack, player)) {
-					baubles.setStackInSlot(i, stack.copy());
-					if (!player.capabilities.isCreativeMode) {
-						player.inventory.setInventorySlotContents(player.inventory.currentItem, ItemStack.EMPTY);
-					}
-					onEquipped(stack, player);
+					ItemStack equipped = stack.copy();
+					equipped.setCount(1);
+					baubles.setStackInSlot(i, equipped);
+					if (!player.capabilities.isCreativeMode)
+						stack.shrink(1);
+					onEquipped(equipped, player);
 
 					return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, stack);
 				}
