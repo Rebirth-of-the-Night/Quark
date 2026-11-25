@@ -78,7 +78,7 @@ public class TotemOfHolding extends Feature {
 				"Items that should be prevented from being saved by the totem\n" + 
 				"Format is modid:item[:meta]", 
 				new String[0]);
-		tempSavingItem = loadPropString("Saving Item", "An item that must be in the player inventory for the totem to work. Set to 'none' to disable", "quark:totem_of_holding");
+		tempSavingItem = loadPropString("Saving Item", "An item that must be in the player inventory for the totem to work. Set to 'none' to disable", "quark:holding_totem");
 		enableTotemItem = loadPropBool("Enable Totem of Holding Item", "", true);
 		entityScale = (float) loadPropDouble("Totem of Holding Entity Scale", "Displayed scale of the totem of holding entity", 1.0D);
 		deathTime = loadPropInt("Totem of Holding Vanish Time", "How long it takes for the totem to vanish once depleted, in ticks", 40);

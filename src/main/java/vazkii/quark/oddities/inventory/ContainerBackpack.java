@@ -75,7 +75,9 @@ public class ContainerBackpack extends ContainerPlayer {
 			} else if (slotType == EntityEquipmentSlot.OFFHAND && !this.inventorySlots.get(45).getHasStack()) {
 				if (!this.mergeItemStack(stack, 45, 46, false)) return ItemStack.EMPTY;
 			} else if (index < 36) {
-				if (!this.mergeItemStack(stack, 46, 73, false) && !this.mergeItemStack(stack, 36, 45, false)) return ItemStack.EMPTY;
+				if (Backpacks.ignoreShiftClick) {
+					if (!this.mergeItemStack(stack, 36, 45, false)) return ItemStack.EMPTY;
+				} else if (!this.mergeItemStack(stack, 46, 73, false) && !this.mergeItemStack(stack, 36, 45, false)) return ItemStack.EMPTY;
 			} else if (index < 73) {
 				if (!this.mergeItemStack(stack, 9, 36, false)) return ItemStack.EMPTY;
 			} else {

@@ -50,12 +50,13 @@ import vazkii.quark.base.network.message.MessageHandleBackpack;
 import vazkii.quark.oddities.RecipesBackpackDyes;
 import vazkii.quark.oddities.client.gui.GuiBackpackInventory;
 import vazkii.quark.oddities.item.ItemBackpack;
+import vazkii.quark.oddities.item.ItemBackpackBaubles;
 
 public class Backpacks extends Feature {
 
 	public static ItemBackpack backpack;
 	
-	public static boolean superOpMode, enableTrades, enableCrafting, enablePickUp;
+	public static boolean superOpMode, enableTrades, enableCrafting, enablePickUp, ignoreShiftClick, enableBaubles;
 
 	public static  int leatherCount, minEmeralds, maxEmeralds;
 	
@@ -71,14 +72,16 @@ public class Backpacks extends Feature {
 		enableCrafting = loadPropBool("Enable Crafting", "Set this to true to enable a crafting recipe", false);
 		enablePickUp = loadPropBool("Enable Backpack Pick-Up", "Set this to true to allow items to be picked up into backpacks when the main inventory is full", false);
 		superOpMode = loadPropBool("Unbalanced Mode", "Set this to true to allow the backpacks to be unequipped even with items in them", false);
+		ignoreShiftClick = loadPropBool("Backpack Ignores Shift-Clicking", "Set this to true to make shift-clicking inventory items send them to the hotbar instead of the backpack", false);
 		leatherCount = loadPropInt("Required Leather", "", 12);
 		minEmeralds = loadPropInt("Min Required Emeralds", "", 12);
 		maxEmeralds = loadPropInt("Max Required Emeralds", "", 18);
+		enableBaubles = Loader.isModLoaded("baubles") && loadPropBool("Enable Backpack Bauble", "Set this to true to turn the backpack into a bauble that's equipped in the Body slot", true);
 	}
 	
 	@Override
 	public void preInit(FMLPreInitializationEvent event) {
-		backpack = new ItemBackpack();
+		backpack = enableBaubles ? new ItemBackpackBaubles() : new ItemBackpack();
 		
 		if (enableCrafting)
 			RecipeHandler.addOreDictRecipe(new ItemStack(backpack),
@@ -205,7 +208,7 @@ public class Backpacks extends Feature {
 	}
 	
 	public static boolean isEntityWearingBackpack(Entity e) {
-		if (Loader.isModLoaded("baubles")) {
+		if (enableBaubles) {
 			if (e instanceof EntityPlayer) {
 				EntityPlayer player = (EntityPlayer) e;
 				return BaublesApi.isBaubleEquipped(player, backpack) != -1;
@@ -222,7 +225,7 @@ public class Backpacks extends Feature {
 	}
 	
 	public static boolean isEntityWearingBackpack(Entity e, ItemStack stack) {
-		if (Loader.isModLoaded("baubles")) {
+		if (enableBaubles) {
 			if (e instanceof EntityPlayer) {
 				EntityPlayer player = (EntityPlayer) e;
 				return BaublesApi.isBaubleEquipped(player, stack.getItem()) != -1;
@@ -241,7 +244,7 @@ public class Backpacks extends Feature {
 	@Nullable
 	public static IItemHandlerModifiable getBackpackInventory(Entity e) {
 		ItemStack stack = null;
-		if (Loader.isModLoaded("baubles")) {
+		if (enableBaubles) {
 			if (e instanceof EntityPlayer)
 				stack = BaublesApi.getBaublesHandler((EntityPlayer) e).getStackInSlot(BaublesApi.isBaubleEquipped((EntityPlayer) e, backpack));
 		} else {
