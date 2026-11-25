@@ -15,7 +15,7 @@ import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
-import net.minecraftforge.fml.common.Loader;
+import vazkii.quark.oddities.feature.Backpacks;
 import vazkii.quark.oddities.feature.TotemOfHolding;
 import vazkii.quark.oddities.item.ItemBackpack;
 
@@ -89,7 +89,7 @@ public class EntityTotemOfHolding extends Entity {
 				
 				// Special support for backpacks
 				if (stack != null && stack.getItem() instanceof ItemBackpack) {
-					if (Loader.isModLoaded("baubles")) {
+					if (Backpacks.enableBaubles) {
 						IBaublesItemHandler baubles = BaublesApi.getBaublesHandler(player);
 						for (int i = 0; i < baubles.getSlots(); i++) {
 							if ((baubles.getStackInSlot(i) == null || baubles.getStackInSlot(i).isEmpty())

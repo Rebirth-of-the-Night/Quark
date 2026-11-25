@@ -44,7 +44,6 @@ import net.minecraftforge.items.ItemHandlerHelper;
 import vazkii.arl.network.NetworkHandler;
 import vazkii.arl.recipe.RecipeHandler;
 import vazkii.arl.util.InventoryIIH;
-import vazkii.quark.base.module.ConfigHelper;
 import vazkii.quark.base.module.Feature;
 import vazkii.quark.base.network.message.MessageHandleBackpack;
 import vazkii.quark.oddities.RecipesBackpackDyes;
@@ -76,12 +75,12 @@ public class Backpacks extends Feature {
 		leatherCount = loadPropInt("Required Leather", "", 12);
 		minEmeralds = loadPropInt("Min Required Emeralds", "", 12);
 		maxEmeralds = loadPropInt("Max Required Emeralds", "", 18);
-		if (Loader.isModLoaded("baubles")) enableBaubles = loadPropBool("Enable Backpack Bauble", "Set this to true to turn the backpack into a bauble that's equipped in the Body slot", true);
+		enableBaubles = Loader.isModLoaded("baubles") && loadPropBool("Enable Backpack Bauble", "Set this to true to turn the backpack into a bauble that's equipped in the Body slot", true);
 	}
 	
 	@Override
 	public void preInit(FMLPreInitializationEvent event) {
-		backpack = ((Loader.isModLoaded("baubles") && enableBaubles) ? new ItemBackpackBaubles() : new ItemBackpack());
+		backpack = enableBaubles ? new ItemBackpackBaubles() : new ItemBackpack();
 		
 		if (enableCrafting)
 			RecipeHandler.addOreDictRecipe(new ItemStack(backpack),
@@ -208,7 +207,7 @@ public class Backpacks extends Feature {
 	}
 	
 	public static boolean isEntityWearingBackpack(Entity e) {
-		if (Loader.isModLoaded("baubles")) {
+		if (enableBaubles) {
 			if (e instanceof EntityPlayer) {
 				EntityPlayer player = (EntityPlayer) e;
 				return BaublesApi.isBaubleEquipped(player, backpack) == 5;
@@ -225,7 +224,7 @@ public class Backpacks extends Feature {
 	}
 	
 	public static boolean isEntityWearingBackpack(Entity e, ItemStack stack) {
-		if (Loader.isModLoaded("baubles")) {
+		if (enableBaubles) {
 			if (e instanceof EntityPlayer) {
 				EntityPlayer player = (EntityPlayer) e;
 				return BaublesApi.isBaubleEquipped(player, stack.getItem()) == 5;
@@ -244,7 +243,7 @@ public class Backpacks extends Feature {
 	@Nullable
 	public static IItemHandlerModifiable getBackpackInventory(Entity e) {
 		ItemStack stack = null;
-		if (Loader.isModLoaded("baubles")) {
+		if (enableBaubles) {
 			if (e instanceof EntityPlayer)
 				stack = BaublesApi.getBaublesHandler((EntityPlayer) e).getStackInSlot(5);
 		} else {

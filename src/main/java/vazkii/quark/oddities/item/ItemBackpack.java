@@ -11,16 +11,11 @@ import com.google.common.base.Predicates;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 
-import baubles.api.BaubleType;
 import baubles.api.BaublesApi;
 import baubles.api.IBauble;
 import baubles.api.cap.IBaublesItemHandler;
-import baubles.api.render.IRenderBauble;
 import net.minecraft.block.BlockDispenser;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBiped;
-import net.minecraft.client.model.ModelPlayer;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.color.IItemColor;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.dispenser.BehaviorDefaultDispenseItem;
@@ -51,8 +46,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.IRarity;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.fml.common.Loader;
-import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -61,10 +54,8 @@ import net.minecraftforge.items.ItemStackHandler;
 import vazkii.arl.interf.IItemColorProvider;
 import vazkii.arl.item.ItemModArmor;
 import vazkii.arl.util.ItemNBTHelper;
-import vazkii.quark.base.Quark;
 import vazkii.quark.base.handler.ProxiedItemStackHandler;
 import vazkii.quark.base.item.IQuarkItem;
-import vazkii.quark.base.lib.LibGuiIDs;
 import vazkii.quark.base.lib.LibMisc;
 import vazkii.quark.oddities.client.model.ModelBackpack;
 import vazkii.quark.oddities.feature.Backpacks;
@@ -109,7 +100,7 @@ public class ItemBackpack extends ItemModArmor implements IQuarkItem, IItemColor
 		} else {
 			EntityLivingBase entitylivingbase = list.get(0);
 
-			if (entitylivingbase instanceof EntityPlayer && Loader.isModLoaded("baubles")) {
+			if (entitylivingbase instanceof EntityPlayer && Backpacks.enableBaubles) {
 				EntityPlayer player = (EntityPlayer) entitylivingbase;
 				IBaublesItemHandler baubles = BaublesApi.getBaublesHandler(player);
 				for (int i = 0; i < baubles.getSlots(); i++) {
@@ -340,19 +331,5 @@ public class ItemBackpack extends ItemModArmor implements IQuarkItem, IItemColor
 		}
 		
 		return prevYawOffset + partialTicks * f;
-	}
-
-	@Override
-	public EntityEquipmentSlot getEquipmentSlot() {
-		return Loader.isModLoaded("baubles") ? null : EntityEquipmentSlot.CHEST;
-	}
-
-	@Override
-	public boolean isValidArmor(ItemStack stack, EntityEquipmentSlot armorType, Entity entity) {
-		if (stack.getItem() instanceof ItemBackpack && entity instanceof EntityPlayer) {
-			if (Loader.isModLoaded("baubles"))
-				return false;
-		}
-		return super.isValidArmor(stack, armorType, entity);
 	}
 }
